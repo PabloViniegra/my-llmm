@@ -1,5 +1,4 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Card, CardContent } from '@/components/ui/card'
+import { BotMessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface MessageBubbleProps {
@@ -9,39 +8,53 @@ interface MessageBubbleProps {
 
 export function MessageBubble({ role, content }: MessageBubbleProps) {
   const isUser = role === 'user'
+
   return (
     <div
       className={cn(
-        'flex gap-3 items-start',
+        'flex gap-3 items-end message-animate',
         isUser ? 'flex-row-reverse' : 'flex-row',
       )}
     >
-      <Avatar className="size-8 shrink-0 mt-0.5">
-        <AvatarFallback
-          className={cn(
-            'text-xs font-medium',
-            isUser
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-muted-foreground',
-          )}
-        >
-          {isUser ? 'U' : 'AI'}
-        </AvatarFallback>
-      </Avatar>
-      <Card
+      {/* Avatar */}
+      {!isUser && (
+        <div className="size-7 rounded-lg shrink-0 flex items-center justify-center bg-brand mb-0.5">
+          <BotMessageSquare
+            className="size-3.5 text-white"
+            strokeWidth={1.75}
+          />
+        </div>
+      )}
+
+      {/* Bubble */}
+      <div
         className={cn(
-          'max-w-[75%] rounded-2xl border-0 shadow-xs',
+          'max-w-[78%] rounded-2xl px-4 py-2.5',
           isUser
-            ? 'rounded-tr-sm bg-primary text-primary-foreground ring-0'
-            : 'rounded-tl-sm',
+            ? [
+                'rounded-br-sm',
+                'bg-brand text-white',
+                'shadow-[0_2px_8px_oklch(0.6_0.22_285_/_0.3)]',
+                'dark:shadow-[0_2px_12px_oklch(0.68_0.24_285_/_0.35)]',
+              ]
+            : [
+                'rounded-bl-sm',
+                'bg-card border border-border/50',
+                'shadow-[0_1px_6px_rgba(0,0,0,0.06)]',
+                'dark:shadow-[0_1px_8px_rgba(0,0,0,0.2)]',
+                'text-foreground',
+              ],
         )}
       >
-        <CardContent className="px-4 py-2.5">
-          <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-            {content}
-          </p>
-        </CardContent>
-      </Card>
+        <p
+          className={cn(
+            'text-[14.5px] leading-relaxed whitespace-pre-wrap break-words',
+            isUser ? 'text-white' : 'text-foreground',
+          )}
+        >
+          {content}
+        </p>
+      </div>
     </div>
   )
 }

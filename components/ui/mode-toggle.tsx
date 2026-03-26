@@ -2,8 +2,6 @@
 
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import * as React from 'react'
-
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -17,21 +15,39 @@ export function ModeToggle() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle theme"
+            className="relative size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          >
+            <Sun className="size-[1.1rem] rotate-0 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute size-[1.1rem] rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        }
+      />
+      <DropdownMenuContent align="end" className="min-w-[120px]">
+        <DropdownMenuItem
+          onClick={() => setTheme('light')}
+          className="gap-2 text-sm"
+        >
+          <Sun className="size-3.5" />
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('dark')}
+          className="gap-2 text-sm"
+        >
+          <Moon className="size-3.5" />
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('system')}
+          className="gap-2 text-sm"
+        >
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
