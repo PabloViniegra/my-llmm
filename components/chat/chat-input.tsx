@@ -1,5 +1,6 @@
 'use client'
 
+import { AnimatePresence, m } from 'framer-motion'
 import { ArrowUp, Square } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -28,18 +29,30 @@ export function ChatInput({
   const canSubmit = Boolean(input.trim()) && !isLoading
 
   return (
-    <div className="relative px-4 pb-5 pt-3">
+    <m.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="relative px-4 pb-5 pt-3"
+    >
       {/* Ambient glow behind the input when loading */}
-      {isLoading && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-4 inset-y-0 rounded-2xl aura-pulse"
-          style={{
-            background:
-              'radial-gradient(ellipse at 50% 100%, oklch(0.6 0.22 285 / 0.18) 0%, transparent 70%)',
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {isLoading && (
+          <m.div
+            key="aura"
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="pointer-events-none absolute inset-x-4 inset-y-0 rounded-2xl aura-pulse"
+            style={{
+              background:
+                'radial-gradient(ellipse at 50% 100%, oklch(0.68 0.18 50 / 0.18) 0%, transparent 70%)',
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <div className="max-w-3xl mx-auto">
         <div
@@ -65,32 +78,64 @@ export function ChatInput({
             className="flex-1 resize-none border-none bg-transparent shadow-none text-[14.5px] leading-relaxed focus-visible:ring-0 min-h-[24px] max-h-[200px] p-0 placeholder:text-muted-foreground/50 font-[inherit]"
             disabled={isLoading}
           />
-          <Button
-            size="icon"
-            onClick={onSubmit}
-            disabled={!canSubmit && !isLoading}
-            aria-label={isLoading ? 'Stop generation' : 'Send message'}
-            className={cn(
-              'size-8 shrink-0 rounded-xl transition-all duration-200',
-              canSubmit
-                ? 'bg-brand hover:bg-brand/90 text-white shadow-[0_2px_8px_oklch(0.6_0.22_285_/_0.35)]'
-                : isLoading
-                  ? 'bg-foreground/10 hover:bg-foreground/15 text-foreground'
-                  : 'bg-muted text-muted-foreground',
-            )}
+
+          <m.div
+            whileTap={{ scale: 0.93 }}
+            whileHover={{ scale: canSubmit || isLoading ? 1.05 : 1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 22 }}
           >
-            {isLoading ? (
-              <Square className="size-3.5 fill-current" />
-            ) : (
-              <ArrowUp className="size-4" />
-            )}
-          </Button>
+            <Button
+              size="icon"
+              onClick={onSubmit}
+              disabled={!canSubmit && !isLoading}
+              aria-label={isLoading ? 'Stop generation' : 'Send message'}
+              className={cn(
+                'size-8 shrink-0 rounded-xl transition-all duration-200',
+                canSubmit
+                  ? 'bg-brand hover:bg-brand/90 text-brand-foreground shadow-[0_2px_10px_oklch(0.68_0.18_50_/_0.35)]'
+                  : isLoading
+                    ? 'bg-foreground/10 hover:bg-foreground/15 text-foreground'
+                    : 'bg-muted text-muted-foreground',
+              )}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {isLoading ? (
+                  <m.span
+                    key="stop"
+                    initial={{ scale: 0, rotate: -90, opacity: 0 }}
+                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                    exit={{ scale: 0, rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex items-center justify-center"
+                  >
+                    <Square className="size-3.5 fill-current" />
+                  </m.span>
+                ) : (
+                  <m.span
+                    key="send"
+                    initial={{ scale: 0, rotate: 90, opacity: 0 }}
+                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                    exit={{ scale: 0, rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex items-center justify-center"
+                  >
+                    <ArrowUp className="size-4" />
+                  </m.span>
+                )}
+              </AnimatePresence>
+            </Button>
+          </m.div>
         </div>
 
-        <p className="text-center text-[11px] text-muted-foreground/50 mt-2 tracking-wide">
+        <m.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+          className="text-center text-[11px] text-muted-foreground/50 mt-2 tracking-wide"
+        >
           Enter to send &middot; Shift+Enter for new line
-        </p>
+        </m.p>
       </div>
-    </div>
+    </m.div>
   )
 }

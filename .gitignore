@@ -54,3 +54,6 @@ prisma/*.db-journal
 AGENTS.md
 opencode.jsonc
 skills-lock.json
+.claude/**
+CLAUDE.md
+.mcp.json

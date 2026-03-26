@@ -1,31 +1,71 @@
+'use client'
+
+import { m } from 'framer-motion'
 import { BotMessageSquare } from 'lucide-react'
+
+const dotVariants = {
+  idle: { y: 0, opacity: 0.5 },
+  bounce: { y: -5, opacity: 1 },
+}
 
 export function ThinkingIndicator() {
   return (
-    <output aria-live="polite" className="flex gap-3 items-end message-animate">
-      {/* Avatar matches message-bubble */}
-      <div className="size-7 rounded-lg shrink-0 flex items-center justify-center bg-brand mb-0.5">
-        <BotMessageSquare className="size-3.5 text-white" strokeWidth={1.75} />
-      </div>
+    <m.output
+      aria-live="polite"
+      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 4, scale: 0.96 }}
+      transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+      className="flex gap-3 items-end"
+    >
+      {/* Avatar */}
+      <m.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{
+          type: 'spring',
+          stiffness: 400,
+          damping: 20,
+          delay: 0.05,
+        }}
+        className="size-7 rounded-lg shrink-0 flex items-center justify-center bg-brand mb-0.5"
+      >
+        <BotMessageSquare className="size-3.5 text-brand-foreground" strokeWidth={1.75} />
+      </m.div>
 
       {/* Animated dots bubble */}
-      <div className="rounded-2xl rounded-bl-sm bg-card border border-border/50 shadow-[0_1px_6px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_8px_rgba(0,0,0,0.2)] px-4 py-3.5">
+      <m.div
+        initial={{ opacity: 0, x: -8 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          type: 'spring',
+          stiffness: 380,
+          damping: 28,
+          delay: 0.06,
+        }}
+        className="rounded-2xl rounded-bl-sm bg-card border border-border/50 shadow-[0_1px_6px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_8px_rgba(0,0,0,0.2)] px-4 py-3.5"
+      >
         <div className="flex items-center gap-1.5" aria-hidden="true">
-          <span
-            className="thinking-dot size-2 rounded-full"
-            style={{ background: 'oklch(0.6 0.22 285 / 0.7)' }}
-          />
-          <span
-            className="thinking-dot size-2 rounded-full"
-            style={{ background: 'oklch(0.6 0.22 285 / 0.7)' }}
-          />
-          <span
-            className="thinking-dot size-2 rounded-full"
-            style={{ background: 'oklch(0.6 0.22 285 / 0.7)' }}
-          />
+          {[0, 1, 2].map((i) => (
+            <m.span
+              key={i}
+              className="size-2 rounded-full"
+              style={{ background: 'oklch(0.68 0.18 50 / 0.75)' }}
+              variants={dotVariants}
+              initial="idle"
+              animate="bounce"
+              transition={{
+                repeat: Infinity,
+                repeatType: 'reverse',
+                duration: 0.5,
+                ease: 'easeInOut',
+                delay: i * 0.14,
+              }}
+            />
+          ))}
         </div>
         <span className="sr-only">AI is thinking</span>
-      </div>
-    </output>
+      </m.div>
+    </m.output>
   )
 }

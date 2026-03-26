@@ -19,15 +19,32 @@ export default function ChatPage() {
     setInput('')
   }
 
+  const handleSuggestion = (text: string) => {
+    if (isLoading) return
+    sendMessage({ text })
+  }
+
   return (
     <div className="flex flex-col h-full">
-      <MessageList messages={messages} isLoading={isLoading} />
+      <MessageList
+        messages={messages}
+        isLoading={isLoading}
+        onSuggestion={handleSuggestion}
+      />
       {error && (
         <div
           role="alert"
-          className="mx-auto max-w-3xl w-full px-4 py-2 text-sm text-destructive"
+          className="mx-auto max-w-3xl w-full px-4 py-2"
         >
-          Something went wrong. Please try again.
+          <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-destructive/8 border border-destructive/20 text-sm text-destructive">
+            <span>Something went wrong. Please try again.</span>
+            <button
+              onClick={handleSubmit}
+              className="shrink-0 text-xs font-medium underline underline-offset-2 hover:no-underline opacity-80 hover:opacity-100 transition-opacity"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       )}
       <ChatInput
