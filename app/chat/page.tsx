@@ -36,12 +36,12 @@ export default function ChatPage() {
       {error && (
         <div role="alert" className="mx-auto max-w-2xl w-full px-4 py-2">
           <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl glass text-sm text-destructive">
-            <span>Something went wrong. Please try again.</span>
+            <span>Algo salió mal. Por favor, inténtalo de nuevo.</span>
             <button
               onClick={handleSubmit}
               className="shrink-0 text-xs font-medium underline underline-offset-2 hover:no-underline opacity-80 hover:opacity-100 transition-opacity"
             >
-              Retry
+              Reintentar
             </button>
           </div>
         </div>

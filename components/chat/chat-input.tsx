@@ -2,7 +2,11 @@
 
 import { AnimatePresence, m } from 'framer-motion'
 import { ArrowUp, Square } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
+
+const MotionButton = m.create(Button)
 
 interface ChatInputProps {
   input: string
@@ -53,22 +57,18 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
           isLoading && 'ring-1 ring-[oklch(0.55_0.22_264_/_0.3)]',
         )}
       >
-        <textarea
+        <Textarea
           value={input}
-          onChange={(e) => {
-            onInputChange(e.target.value)
-            e.currentTarget.style.height = 'auto'
-            e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`
-          }}
+          onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Pregunta lo que quieras…"
           rows={1}
-          className="flex-1 resize-none border-none bg-transparent shadow-none text-[14.5px] leading-relaxed focus:outline-none min-h-[24px] max-h-[160px] p-0 placeholder:text-foreground/30 font-[inherit]"
+          className="flex-1 resize-none border-none bg-transparent dark:bg-transparent shadow-none text-[14.5px] leading-relaxed min-h-[24px] max-h-[160px] p-0 placeholder:text-foreground/30 font-[inherit] focus-visible:ring-0 focus-visible:border-transparent"
           disabled={isLoading}
           aria-label="Chat input"
         />
 
-        <m.button
+        <MotionButton
           whileTap={{ scale: 0.9 }}
           whileHover={{ scale: canSubmit || isLoading ? 1.08 : 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 22 }}
@@ -76,12 +76,12 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
           disabled={!canSubmit && !isLoading}
           aria-label={isLoading ? 'Stop generation' : 'Send message'}
           className={cn(
-            'size-8 shrink-0 rounded-full flex items-center justify-center transition-all duration-200',
+            'size-8 shrink-0 rounded-full transition-all duration-200',
             canSubmit
-              ? 'brand-gradient text-white shadow-[0_3px_14px_oklch(0.55_0.22_264_/_0.4)]'
+              ? 'brand-gradient text-white shadow-[0_3px_14px_oklch(0.55_0.22_264_/_0.4)] hover:opacity-90'
               : isLoading
                 ? 'bg-foreground/10 text-foreground hover:bg-foreground/15'
-                : 'bg-foreground/8 text-foreground/30',
+                : 'bg-foreground/8 text-foreground/30 hover:bg-foreground/8',
           )}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -109,7 +109,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
               </m.span>
             )}
           </AnimatePresence>
-        </m.button>
+        </MotionButton>
       </div>
 
       <p className="text-center text-[10.5px] text-foreground/30 mt-2 tracking-wide">

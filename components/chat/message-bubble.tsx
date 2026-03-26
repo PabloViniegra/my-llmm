@@ -3,6 +3,7 @@
 import { m } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 
 interface MessageBubbleProps {
@@ -26,8 +27,13 @@ export function MessageBubble({ role, content }: MessageBubbleProps) {
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 360, damping: 22, delay: 0.04 }}
-          className="size-7 rounded-full shrink-0 brand-gradient mb-0.5 shadow-[0_2px_10px_oklch(0.55_0.22_264_/_0.3)]"
-        />
+        >
+          <Avatar
+            className="size-7 shrink-0 mb-0.5 shadow-[0_2px_10px_oklch(0.55_0.22_264_/_0.3)]"
+          >
+            <AvatarFallback className="brand-gradient" />
+          </Avatar>
+        </m.div>
       )}
 
       {/* Bubble */}

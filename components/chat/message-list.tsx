@@ -5,9 +5,12 @@ import { isTextUIPart } from 'ai'
 import { AnimatePresence, m } from 'framer-motion'
 import { BotMessageSquare } from 'lucide-react'
 import { useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { MessageBubble } from './message-bubble'
 import { ThinkingIndicator } from './thinking-indicator'
+
+const MotionButton = m.create(Button)
 
 interface MessageListProps {
   messages: UIMessage[]
@@ -16,9 +19,9 @@ interface MessageListProps {
 }
 
 const suggestions = [
-  'Explain how neural networks learn',
-  'Write a Python function for me',
-  'Brainstorm product ideas',
+  'Explícame cómo aprenden las redes neuronales',
+  'Escríbeme una función en Python',
+  'Genera ideas para un producto',
 ]
 
 export function MessageList({ messages, isLoading, onSuggestion }: MessageListProps) {
@@ -27,7 +30,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
   useEffect(() => {
     void messages.length
     void isLoading
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    bottomRef.current?.scrollIntoView({ behavior: isLoading ? 'instant' : 'smooth' })
   })
 
   const visibleMessages = messages.filter(
@@ -77,10 +80,10 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
               className="space-y-1.5"
             >
               <h2 className="text-[18px] font-semibold tracking-tight text-foreground">
-                How can I help?
+                ¿En qué te puedo ayudar?
               </h2>
               <p className="text-[13px] text-muted-foreground leading-relaxed">
-                Powered by open-source models via OpenRouter.
+                Impulsado por modelos open-source vía OpenRouter.
               </p>
             </m.div>
 
@@ -91,8 +94,9 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
               className="flex flex-wrap gap-2 justify-center"
             >
               {suggestions.map((suggestion, i) => (
-                <m.button
+                <MotionButton
                   key={suggestion}
+                  variant="ghost"
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -104,10 +108,10 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
                   whileTap={{ scale: 0.97 }}
                   onClick={() => onSuggestion?.(suggestion)}
                   disabled={isLoading}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-medium glass text-foreground/65 tracking-tight cursor-pointer hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="rounded-full h-auto px-3.5 py-1.5 text-[12px] font-medium glass text-foreground/65 tracking-tight hover:text-foreground hover:bg-transparent disabled:opacity-40"
                 >
                   {suggestion}
-                </m.button>
+                </MotionButton>
               ))}
             </m.div>
           </div>
