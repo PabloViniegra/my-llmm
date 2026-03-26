@@ -118,7 +118,12 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
         </m.div>
       ) : (
         <ScrollArea key="message-list" className="flex-1 px-4">
-          <div className="flex flex-col gap-4 py-6 max-w-2xl mx-auto">
+          <div
+            role="log"
+            aria-label="Mensajes del chat"
+            aria-live="polite"
+            className="flex flex-col gap-4 py-6 max-w-2xl mx-auto"
+          >
             <AnimatePresence initial={false}>
               {visibleMessages.map((message) => {
                 const textContent = message.parts

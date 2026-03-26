@@ -112,7 +112,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
         </MotionButton>
       </div>
 
-      <p className="text-center text-[10.5px] text-foreground/30 mt-2 tracking-wide">
+      <p className="text-center text-[10.5px] text-foreground/45 mt-2 tracking-wide">
         Enter para enviar · Shift+Enter nueva línea
       </p>
     </m.div>
