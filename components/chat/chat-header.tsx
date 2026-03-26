@@ -3,10 +3,13 @@
 import { m } from 'framer-motion'
 import { Clock, Moon, Plus, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 export function ChatHeader() {
   const { resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   const isDark = resolvedTheme === 'dark'
 
   return (
@@ -44,10 +47,10 @@ export function ChatHeader() {
             'transition-opacity duration-150 hover:opacity-70 active:scale-95',
           )}
         >
-          {isDark
+          {mounted && (isDark
             ? <Sun className="size-3.5 text-foreground/55" strokeWidth={1.8} />
             : <Moon className="size-3.5 text-foreground/55" strokeWidth={1.8} />
-          }
+          )}
         </button>
         <button
           aria-label="New conversation"
