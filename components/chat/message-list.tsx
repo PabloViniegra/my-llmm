@@ -58,10 +58,9 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
               className="flex items-center justify-center"
             >
               <div
-                className="size-14 rounded-2xl flex items-center justify-center"
+                className="size-14 rounded-full flex items-center justify-center brand-gradient"
                 style={{
-                  background: 'var(--color-brand)',
-                  boxShadow: '0 4px 20px oklch(from var(--color-brand) l c h / 0.35)',
+                  boxShadow: '0 4px 24px oklch(0.55 0.22 264 / 0.35)',
                 }}
               >
                 <BotMessageSquare
@@ -105,7 +104,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
                   whileTap={{ scale: 0.97 }}
                   onClick={() => onSuggestion?.(suggestion)}
                   disabled={isLoading}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium bg-brand-muted text-brand border border-brand/20 tracking-tight cursor-pointer transition-colors hover:bg-brand/15 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-medium glass text-foreground/65 tracking-tight cursor-pointer hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   {suggestion}
                 </m.button>
@@ -115,7 +114,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
         </m.div>
       ) : (
         <ScrollArea key="message-list" className="flex-1 px-4">
-          <div className="flex flex-col gap-4 py-6 max-w-3xl mx-auto">
+          <div className="flex flex-col gap-4 py-6 max-w-2xl mx-auto">
             <AnimatePresence initial={false}>
               {visibleMessages.map((message) => {
                 const textContent = message.parts

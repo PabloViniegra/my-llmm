@@ -3,6 +3,7 @@
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
 import { useState } from 'react'
+import { ChatHeader } from '@/components/chat/chat-header'
 import { ChatInput } from '@/components/chat/chat-input'
 import { MessageList } from '@/components/chat/message-list'
 
@@ -25,18 +26,16 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-dvh">
+      <ChatHeader />
       <MessageList
         messages={messages}
         isLoading={isLoading}
         onSuggestion={handleSuggestion}
       />
       {error && (
-        <div
-          role="alert"
-          className="mx-auto max-w-3xl w-full px-4 py-2"
-        >
-          <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-destructive/8 border border-destructive/20 text-sm text-destructive">
+        <div role="alert" className="mx-auto max-w-2xl w-full px-4 py-2">
+          <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl glass text-sm text-destructive">
             <span>Something went wrong. Please try again.</span>
             <button
               onClick={handleSubmit}
