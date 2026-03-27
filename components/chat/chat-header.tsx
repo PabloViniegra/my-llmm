@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { UserMenu } from '@/components/chat/user-menu'
 
 export function ChatHeader() {
   const { resolvedTheme, setTheme } = useTheme()
@@ -27,9 +28,9 @@ export function ChatHeader() {
             render={
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 aria-label="Conversation history"
-                className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95"
+                className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95 size-9"
               >
                 <Clock className="size-3.5 text-foreground/55" strokeWidth={1.8} />
               </Button>
@@ -40,7 +41,7 @@ export function ChatHeader() {
 
         {/* Center: title pill */}
         <div className="glass rounded-full px-4 py-1.5">
-          <span className="text-[13px] font-semibold tracking-tight text-foreground/75 select-none">
+          <span className="text-[13px] font-semibold tracking-tight text-foreground/75 select-none font-heading">
             LLM Chat
           </span>
         </div>
@@ -52,10 +53,10 @@ export function ChatHeader() {
               render={
                 <Button
                   variant="ghost"
-                  size="icon-sm"
+                  size="icon"
                   onClick={() => setTheme(isDark ? 'light' : 'dark')}
                   aria-label="Toggle theme"
-                  className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95"
+                  className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95 size-9"
                 >
                   {mounted && (isDark
                     ? <Sun className="size-3.5 text-foreground/55" strokeWidth={1.8} />
@@ -72,9 +73,9 @@ export function ChatHeader() {
               render={
                 <Button
                   variant="ghost"
-                  size="icon-sm"
+                  size="icon"
                   aria-label="New conversation"
-                  className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95"
+                  className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95 size-9"
                 >
                   <Plus className="size-3.5 text-foreground/55" strokeWidth={2} />
                 </Button>
@@ -82,6 +83,8 @@ export function ChatHeader() {
             />
             <TooltipContent>Nueva conversación</TooltipContent>
           </Tooltip>
+
+          <UserMenu />
         </div>
       </m.header>
     </TooltipProvider>

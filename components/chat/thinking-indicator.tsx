@@ -28,7 +28,7 @@ export function ThinkingIndicator() {
           damping: 20,
           delay: 0.05,
         }}
-        className="size-7 rounded-lg shrink-0 flex items-center justify-center bg-brand mb-0.5"
+        className="size-7 rounded-full shrink-0 flex items-center justify-center brand-gradient mb-0.5 shadow-[0_2px_10px_var(--shadow-brand-sm)]"
       >
         <BotMessageSquare className="size-3.5 text-brand-foreground" strokeWidth={1.75} />
       </m.div>
@@ -50,7 +50,7 @@ export function ThinkingIndicator() {
             <m.span
               key={i}
               className="size-2 rounded-full"
-              style={{ background: 'oklch(0.68 0.18 50 / 0.75)' }}
+              style={{ background: 'var(--thinking-dot-color)' }}
               variants={dotVariants}
               initial="idle"
               animate="bounce"

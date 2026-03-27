@@ -28,10 +28,8 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    void messages.length
-    void isLoading
     bottomRef.current?.scrollIntoView({ behavior: isLoading ? 'instant' : 'smooth' })
-  })
+  }, [messages.length, isLoading])
 
   const visibleMessages = messages.filter(
     (m) => m.role === 'user' || m.role === 'assistant',
@@ -63,7 +61,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
               <div
                 className="size-14 rounded-full flex items-center justify-center brand-gradient"
                 style={{
-                  boxShadow: '0 4px 24px oklch(0.55 0.22 264 / 0.35)',
+                  boxShadow: '0 4px 24px var(--shadow-brand)',
                 }}
               >
                 <BotMessageSquare

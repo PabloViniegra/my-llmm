@@ -45,7 +45,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
             className="pointer-events-none absolute inset-x-4 inset-y-0 rounded-full aura-pulse"
             style={{
               background:
-                'radial-gradient(ellipse at 50% 100%, oklch(0.55 0.22 264 / 0.2) 0%, transparent 70%)',
+                'radial-gradient(ellipse at 50% 100%, var(--shadow-brand-aura) 0%, transparent 70%)',
             }}
           />
         )}
@@ -53,8 +53,8 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
 
       <div
         className={cn(
-          'relative flex items-end gap-2 rounded-full px-5 py-3 glass-lg',
-          isLoading && 'ring-1 ring-[oklch(0.55_0.22_264_/_0.3)]',
+          'relative flex items-center gap-2 rounded-full px-5 py-3 glass-lg',
+          isLoading && 'ring-1 ring-[var(--shadow-brand-sm)]',
         )}
       >
         <Textarea
@@ -76,9 +76,9 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
           disabled={!canSubmit && !isLoading}
           aria-label={isLoading ? 'Stop generation' : 'Send message'}
           className={cn(
-            'size-8 shrink-0 rounded-full transition-all duration-200',
+            'size-11 shrink-0 rounded-full transition-all duration-200',
             canSubmit
-              ? 'brand-gradient text-white shadow-[0_3px_14px_oklch(0.55_0.22_264_/_0.4)] hover:opacity-90'
+              ? 'brand-gradient text-white shadow-[0_3px_14px_var(--shadow-brand)] hover:opacity-90'
               : isLoading
                 ? 'bg-foreground/10 text-foreground hover:bg-foreground/15'
                 : 'bg-foreground/8 text-foreground/30 hover:bg-foreground/8',

@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { m } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -11,11 +12,13 @@ interface MessageBubbleProps {
   content: string
 }
 
-export function MessageBubble({ role, content }: MessageBubbleProps) {
+export const MessageBubble = memo(function MessageBubble({ role, content }: MessageBubbleProps) {
   const isUser = role === 'user'
 
   return (
     <m.div
+      role="article"
+      aria-label={isUser ? 'Tu mensaje' : 'Respuesta del asistente'}
       initial={{ opacity: 0, y: 10, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 340, damping: 28 }}
@@ -29,7 +32,7 @@ export function MessageBubble({ role, content }: MessageBubbleProps) {
           transition={{ type: 'spring', stiffness: 360, damping: 22, delay: 0.04 }}
         >
           <Avatar
-            className="size-7 shrink-0 mb-0.5 shadow-[0_2px_10px_oklch(0.55_0.22_264_/_0.3)]"
+            className="size-7 shrink-0 mb-0.5 shadow-[0_2px_10px_var(--shadow-brand-sm)]"
           >
             <AvatarFallback className="brand-gradient" />
           </Avatar>
@@ -47,8 +50,7 @@ export function MessageBubble({ role, content }: MessageBubbleProps) {
             ? [
                 'rounded-[20px] rounded-br-[6px]',
                 'brand-gradient text-white',
-                'shadow-[0_4px_20px_oklch(0.55_0.22_264_/_0.35)]',
-                '[box-shadow:0_4px_20px_oklch(0.55_0.22_264_/_0.35),inset_0_1px_0_rgba(255,255,255,0.2)]',
+                '[box-shadow:0_4px_20px_var(--shadow-brand),inset_0_1px_0_rgba(255,255,255,0.2)]',
               ]
             : [
                 'rounded-[20px] rounded-bl-[6px]',
@@ -131,4 +133,4 @@ export function MessageBubble({ role, content }: MessageBubbleProps) {
       </m.div>
     </m.div>
   )
-}
+})
