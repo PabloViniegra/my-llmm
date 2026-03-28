@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { m } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface MessageBubbleProps {
@@ -30,12 +30,9 @@ export const MessageBubble = memo(function MessageBubble({ role, content }: Mess
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 360, damping: 22, delay: 0.04 }}
+          className="size-7 shrink-0 mb-0.5 rounded-full brand-gradient flex items-center justify-center shadow-[0_2px_10px_var(--shadow-brand-sm)]"
         >
-          <Avatar
-            className="size-7 shrink-0 mb-0.5 shadow-[0_2px_10px_var(--shadow-brand-sm)]"
-          >
-            <AvatarFallback className="brand-gradient" />
-          </Avatar>
+          <Sparkles className="size-3.5 text-white" strokeWidth={1.75} />
         </m.div>
       )}
 

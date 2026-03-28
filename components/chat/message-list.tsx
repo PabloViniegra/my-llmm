@@ -3,10 +3,9 @@
 import type { UIMessage } from 'ai'
 import { isTextUIPart } from 'ai'
 import { AnimatePresence, m } from 'framer-motion'
-import { BotMessageSquare } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { MessageBubble } from './message-bubble'
 import { ThinkingIndicator } from './thinking-indicator'
 
@@ -28,7 +27,10 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: isLoading ? 'instant' : 'smooth' })
+    const raf = requestAnimationFrame(() => {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    })
+    return () => cancelAnimationFrame(raf)
   }, [messages.length, isLoading])
 
   const visibleMessages = messages.filter(
@@ -64,7 +66,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
                   boxShadow: '0 4px 24px var(--shadow-brand)',
                 }}
               >
-                <BotMessageSquare
+                <Sparkles
                   className="size-7 text-white"
                   strokeWidth={1.5}
                 />
@@ -115,7 +117,10 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
           </div>
         </m.div>
       ) : (
-        <ScrollArea key="message-list" className="flex-1 px-4">
+        <div
+          key="message-list"
+          className="flex-1 overflow-y-auto px-4 [scrollbar-gutter:stable]"
+        >
           <div
             role="log"
             aria-label="Mensajes del chat"
@@ -143,7 +148,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
             </AnimatePresence>
             <div ref={bottomRef} />
           </div>
-        </ScrollArea>
+        </div>
       )}
     </AnimatePresence>
   )
