@@ -1,7 +1,9 @@
 'use client'
 
+import { Suspense } from 'react'
 import { m } from 'framer-motion'
 import { BotMessageSquare, Plus, Settings } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/ui/mode-toggle'
 import {
@@ -14,7 +16,13 @@ import {
 
 const MotionButton = m.create(Button)
 
-export function SidebarNav() {
+interface SidebarNavProps {
+  children?: React.ReactNode
+}
+
+export function SidebarNav({ children }: SidebarNavProps) {
+  const router = useRouter()
+
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader className="flex flex-row items-center justify-between gap-2 px-3 py-3 border-b border-sidebar-border">
@@ -40,7 +48,7 @@ export function SidebarNav() {
           </div>
         </div>
 
-        {/* New conversation — only visible when expanded */}
+        {/* New conversation */}
         <MotionButton
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -48,24 +56,23 @@ export function SidebarNav() {
           variant="ghost"
           size="icon"
           aria-label="New conversation"
+          onClick={() => router.push('/chat')}
           className="shrink-0 size-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent group-data-[collapsible=icon]:hidden"
         >
           <Plus className="size-4" />
         </MotionButton>
       </SidebarHeader>
 
-      {/* Content area — reserved for conversation history */}
-      <SidebarContent className="px-2 py-2">
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15, duration: 0.3 }}
-          className="group-data-[collapsible=icon]:hidden px-2 py-6 text-center"
+      <SidebarContent className="px-2 py-2 group-data-[collapsible=icon]:hidden overflow-y-auto">
+        <Suspense
+          fallback={
+            <p className="px-2 py-4 text-center text-[11px] text-muted-foreground/40">
+              Cargando...
+            </p>
+          }
         >
-          <p className="text-[11px] text-muted-foreground/50 leading-relaxed">
-            Conversations will appear here
-          </p>
-        </m.div>
+          {children}
+        </Suspense>
       </SidebarContent>
 
       <SidebarFooter className="flex flex-row items-center justify-between gap-1.5 px-3 py-3 border-t border-sidebar-border">
