@@ -76,6 +76,8 @@ export async function POST(req: Request) {
   const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')
 
   // Persist user message and maybe trigger title generation
+  let ownsConversation = false
+
   if (conversationId && lastUserMsg) {
     const session = await auth.api.getSession({ headers: req.headers })
     if (session) {
@@ -84,6 +86,7 @@ export async function POST(req: Request) {
         include: { _count: { select: { messages: true } } },
       })
       if (conversation) {
+        ownsConversation = true
         const userText = extractText(lastUserMsg)
         await db.message.create({
           data: { conversationId, role: 'user', content: userText },
@@ -124,13 +127,10 @@ export async function POST(req: Request) {
       writer.write({ type: 'text-end', id: textId })
 
       // Persist assistant message after stream completes
-      if (conversationId && assistantText.trim()) {
-        const session = await auth.api.getSession({ headers: req.headers })
-        if (session) {
-          await db.message
-            .create({ data: { conversationId, role: 'assistant', content: assistantText } })
-            .catch(console.error)
-        }
+      if (conversationId && ownsConversation && assistantText.trim()) {
+        await db.message
+          .create({ data: { conversationId, role: 'assistant', content: assistantText } })
+          .catch(console.error)
       }
     },
     onError: (err) => {
