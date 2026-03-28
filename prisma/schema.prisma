@@ -16,6 +16,8 @@ model Conversation {
   updatedAt DateTime  @updatedAt
   messages  Message[]
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Message {
