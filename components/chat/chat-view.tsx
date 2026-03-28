@@ -3,7 +3,8 @@
 import { useChat } from '@ai-sdk/react'
 import type { UIMessage } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { ChatHeader } from '@/components/chat/chat-header'
 import { ChatInput } from '@/components/chat/chat-input'
 import { MessageList } from '@/components/chat/message-list'
@@ -14,8 +15,10 @@ interface ChatViewProps {
 }
 
 export function ChatView({ conversationId, initialMessages }: ChatViewProps) {
+  const router = useRouter()
   const [input, setInput] = useState('')
   const lastInputRef = useRef('')
+  const prevIsLoadingRef = useRef(false)
 
   const transport = useMemo(
     () => new DefaultChatTransport({ api: '/api/chat', body: { conversationId } }),
@@ -24,6 +27,14 @@ export function ChatView({ conversationId, initialMessages }: ChatViewProps) {
 
   const { messages, sendMessage, status, error } = useChat({ transport, initialMessages })
   const isLoading = status === 'streaming' || status === 'submitted'
+
+  // Refresh layout when streaming ends so the sidebar shows the new conversation title
+  useEffect(() => {
+    if (prevIsLoadingRef.current && !isLoading && messages.length > 0) {
+      router.refresh()
+    }
+    prevIsLoadingRef.current = isLoading
+  }, [isLoading, messages.length, router])
 
   const handleSubmit = () => {
     if (!input.trim() || isLoading) return

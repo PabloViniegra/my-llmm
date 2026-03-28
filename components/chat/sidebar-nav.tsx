@@ -6,6 +6,7 @@ import { BotMessageSquare, Plus, Settings } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/ui/mode-toggle'
+import { ConversationListSkeleton } from '@/components/chat/conversation-list-skeleton'
 import {
   Sidebar,
   SidebarContent,
@@ -56,7 +57,7 @@ export function SidebarNav({ children }: SidebarNavProps) {
           variant="ghost"
           size="icon"
           aria-label="New conversation"
-          onClick={() => router.push('/chat')}
+          onClick={() => { router.push('/chat'); router.refresh() }}
           className="shrink-0 size-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent group-data-[collapsible=icon]:hidden"
         >
           <Plus className="size-4" />
@@ -64,13 +65,7 @@ export function SidebarNav({ children }: SidebarNavProps) {
       </SidebarHeader>
 
       <SidebarContent className="px-2 py-2 group-data-[collapsible=icon]:hidden overflow-y-auto">
-        <Suspense
-          fallback={
-            <p className="px-2 py-4 text-center text-[11px] text-muted-foreground/40">
-              Cargando...
-            </p>
-          }
-        >
+        <Suspense fallback={<ConversationListSkeleton />}>
           {children}
         </Suspense>
       </SidebarContent>

@@ -43,8 +43,9 @@ bun-debug.log*
 next-env.d.ts
 
 # prisma
-prisma/*.db
-prisma/*.db-journal
+*.db
+*.db-journal
+/generated
 /generated
 
 # AI & opencode

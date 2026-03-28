@@ -119,7 +119,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
       ) : (
         <div
           key="message-list"
-          className="flex-1 overflow-y-auto px-4 [scrollbar-gutter:stable]"
+          className="flex-1 overflow-y-scroll px-4"
         >
           <div
             role="log"
