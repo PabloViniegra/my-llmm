@@ -4,13 +4,17 @@ import { m } from 'framer-motion'
 import { Clock, Moon, Plus, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { UserMenu } from '@/components/chat/user-menu'
+import { useSidebar } from '@/components/ui/sidebar'
 
 export function ChatHeader() {
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const router = useRouter()
+  const { toggleSidebar } = useSidebar()
   useEffect(() => setMounted(true), [])
   const isDark = resolvedTheme === 'dark'
 
@@ -30,6 +34,7 @@ export function ChatHeader() {
                 variant="ghost"
                 size="icon"
                 aria-label="Conversation history"
+                onClick={toggleSidebar}
                 className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95 size-9"
               >
                 <Clock className="size-3.5 text-foreground/55" strokeWidth={1.8} />
@@ -75,6 +80,7 @@ export function ChatHeader() {
                   variant="ghost"
                   size="icon"
                   aria-label="New conversation"
+                  onClick={() => router.push('/chat')}
                   className="rounded-full glass hover:bg-transparent hover:opacity-70 active:scale-95 size-9"
                 >
                   <Plus className="size-3.5 text-foreground/55" strokeWidth={2} />
