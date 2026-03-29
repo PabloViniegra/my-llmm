@@ -25,7 +25,11 @@ export function ChatView({ conversationId, initialMessages }: ChatViewProps) {
     [conversationId],
   )
 
-  const { messages, sendMessage, status, error } = useChat({ transport, initialMessages })
+  const { messages, sendMessage, status, error } = useChat({
+    id: conversationId,
+    messages: initialMessages,
+    transport,
+  })
   const isLoading = status === 'streaming' || status === 'submitted'
 
   // Refresh layout when streaming ends so the sidebar shows the new conversation title

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono, Sora } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { MotionProvider } from '@/components/motion-provider'
+import { env } from '@/lib/env'
 import './globals.css'
 
 const inter = Inter({
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     template: '%s · LLM Chat',
   },
   description: 'Chat con modelos de IA open-source vía OpenRouter. Rápido, privado, sin registro.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL),
   openGraph: {
     title: 'LLM Chat',
     description: 'Chat con modelos de IA open-source vía OpenRouter.',

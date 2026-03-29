@@ -5,8 +5,9 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { env } from '@/lib/env'
 
-const openrouter = new OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY })
+const openrouter = new OpenRouter({ apiKey: env.OPENROUTER_API_KEY })
 
 const uiMessageSchema = z
   .object({

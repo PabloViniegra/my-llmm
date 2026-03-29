@@ -26,5 +26,5 @@ export default async function ConversationPage({ params }: Props) {
     parts: [{ type: 'text' as const, text: m.content }],
   }))
 
-  return <ChatView conversationId={id} initialMessages={initialMessages} />
+  return <ChatView key={id} conversationId={id} initialMessages={initialMessages} />
 }
