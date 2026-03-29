@@ -1,18 +1,12 @@
-// components/chat/share-conversation-modal.tsx
 'use client'
 
 import { useEffect, useState, useTransition, useCallback } from 'react'
-import { UserPlus, X, Loader2 } from 'lucide-react'
+import { UserPlus, X, Loader2, Users } from 'lucide-react'
 import Image from 'next/image'
 import { m, AnimatePresence } from 'framer-motion'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { shareConversation, revokeShare, getConversationShares } from '@/lib/actions/shares'
 
 interface SearchUser {
@@ -45,28 +39,19 @@ export function ShareConversationModal({
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  // Load current shares when modal opens
   useEffect(() => {
     if (!open) return
     getConversationShares(conversationId).then((data) => {
-      setShares(
-        data.map((s) => ({
-          id: s.id,
-          sharedWith: s.sharedWith as SearchUser,
-        })),
-      )
+      setShares(data.map((s) => ({ id: s.id, sharedWith: s.sharedWith as SearchUser })))
     })
   }, [open, conversationId])
 
-  // Debounced user search
   useEffect(() => {
     if (query.length < 2) { setResults([]); return }
     const timer = setTimeout(async () => {
       setSearching(true)
       const excludeIds = shares.map((s) => s.sharedWith.id).join(',')
-      const res = await fetch(
-        `/api/users/search?q=${encodeURIComponent(query)}&exclude=${excludeIds}`,
-      )
+      const res = await fetch(`/api/users/search?q=${encodeURIComponent(query)}&exclude=${excludeIds}`)
       const data = await res.json()
       setResults(data.users ?? [])
       setSearching(false)
@@ -80,10 +65,7 @@ export function ShareConversationModal({
       startTransition(async () => {
         const result = await shareConversation(conversationId, user.email)
         if (result.error) { setError(result.error); return }
-        setShares((prev) => [
-          ...prev,
-          { id: crypto.randomUUID(), sharedWith: user },
-        ])
+        setShares((prev) => [...prev, { id: crypto.randomUUID(), sharedWith: user }])
         setResults((prev) => prev.filter((u) => u.id !== user.id))
         setQuery('')
       })
@@ -103,61 +85,102 @@ export function ShareConversationModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <UserPlus className="size-4" />
-            Compartir conversación
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent
+        showCloseButton={false}
+        className="glass-lg border-0 ring-0 p-0 gap-0 overflow-hidden sm:max-w-sm rounded-2xl"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="size-7 rounded-xl glass flex items-center justify-center shrink-0">
+              <UserPlus className="size-3.5 text-foreground/60" strokeWidth={1.8} />
+            </div>
+            <span className="text-[14px] font-semibold tracking-tight text-foreground/80 font-heading">
+              Compartir
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onOpenChange(false)}
+            className="size-7 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent/40"
+          >
+            <X className="size-3.5" />
+            <span className="sr-only">Cerrar</span>
+          </Button>
+        </div>
 
-        <div className="space-y-4">
+        {/* Divider */}
+        <div className="h-px bg-border/50 mx-5" />
+
+        <div className="px-5 py-4 space-y-3">
           {/* Search input */}
           <div className="relative">
-            <Input
-              placeholder="Buscar por nombre o email..."
+            <input
+              type="text"
+              placeholder="Buscar por nombre o email…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pr-8"
+              className={cn(
+                'w-full glass-sm rounded-xl px-4 py-2.5 text-[13px] text-foreground/85',
+                'placeholder:text-muted-foreground/50 outline-none',
+                'focus:ring-1 focus:ring-ring transition-shadow',
+                searching && 'pr-10',
+              )}
             />
             {searching && (
-              <Loader2 className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 animate-spin text-muted-foreground" />
+              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 size-3.5 animate-spin text-muted-foreground/60" />
             )}
           </div>
 
-          {/* Error message */}
-          {error && (
-            <p className="text-[12px] text-destructive">{error}</p>
-          )}
+          {/* Error */}
+          <AnimatePresence>
+            {error && (
+              <m.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                className="text-[12px] text-destructive px-1"
+              >
+                {error}
+              </m.p>
+            )}
+          </AnimatePresence>
 
           {/* Search results */}
           <AnimatePresence>
             {results.length > 0 && (
               <m.div
-                initial={{ opacity: 0, y: -4 }}
+                initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                className="border border-border rounded-lg overflow-hidden divide-y divide-border"
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                className="glass-sm rounded-xl overflow-hidden"
               >
-                {results.map((user) => (
+                {results.map((user, i) => (
                   <div
                     key={user.id}
-                    className="flex items-center gap-3 px-3 py-2.5 hover:bg-accent/40 transition-colors"
+                    className={cn(
+                      'flex items-center gap-3 px-3 py-2.5 hover:bg-accent/30 transition-colors',
+                      i > 0 && 'border-t border-border/40',
+                    )}
                   >
                     <UserAvatar user={user} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate">{user.name}</p>
-                      <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
+                      <p className="text-[13px] font-medium truncate text-foreground/85">{user.name}</p>
+                      <p className="text-[11px] text-muted-foreground/60 truncate">{user.email}</p>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="shrink-0 h-7 text-[12px]"
+                    <button
                       disabled={isPending}
                       onClick={() => handleShare(user)}
+                      className={cn(
+                        'shrink-0 h-7 px-3 rounded-lg text-[12px] font-medium',
+                        'glass transition-opacity hover:opacity-80 active:scale-95',
+                        'text-foreground/70 disabled:opacity-40',
+                      )}
                     >
-                      Compartir
-                    </Button>
+                      Añadir
+                    </button>
                   </div>
                 ))}
               </m.div>
@@ -165,40 +188,51 @@ export function ShareConversationModal({
           </AnimatePresence>
 
           {/* Current shares */}
-          {shares.length > 0 && (
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
-                Con acceso
-              </p>
-              <div className="space-y-1">
-                {shares.map((share) => (
-                  <div
-                    key={share.id}
-                    className="flex items-center gap-3 px-2 py-2 rounded-lg"
-                  >
-                    <UserAvatar user={share.sharedWith} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate">{share.sharedWith.name}</p>
-                      <p className="text-[11px] text-muted-foreground truncate">{share.sharedWith.email}</p>
-                    </div>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="size-6 shrink-0 text-muted-foreground hover:text-destructive"
-                      disabled={isPending}
-                      aria-label={`Revocar acceso de ${share.sharedWith.name}`}
-                      onClick={() => handleRevoke(share.sharedWith.id)}
+          <AnimatePresence>
+            {shares.length > 0 && (
+              <m.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-1.5"
+              >
+                <div className="flex items-center gap-1.5 px-1">
+                  <Users className="size-3 text-muted-foreground/40" strokeWidth={1.8} />
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
+                    Con acceso
+                  </span>
+                </div>
+                <div className="glass-sm rounded-xl overflow-hidden">
+                  {shares.map((share, i) => (
+                    <div
+                      key={share.id}
+                      className={cn(
+                        'flex items-center gap-3 px-3 py-2.5',
+                        i > 0 && 'border-t border-border/40',
+                      )}
                     >
-                      <X className="size-3" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+                      <UserAvatar user={share.sharedWith} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium truncate text-foreground/85">{share.sharedWith.name}</p>
+                        <p className="text-[11px] text-muted-foreground/60 truncate">{share.sharedWith.email}</p>
+                      </div>
+                      <button
+                        disabled={isPending}
+                        aria-label={`Revocar acceso de ${share.sharedWith.name}`}
+                        onClick={() => handleRevoke(share.sharedWith.id)}
+                        className="size-6 shrink-0 rounded-lg flex items-center justify-center text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+                      >
+                        <X className="size-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </m.div>
+            )}
+          </AnimatePresence>
 
+          {/* Empty state */}
           {shares.length === 0 && query.length < 2 && (
-            <p className="text-center text-[12px] text-muted-foreground py-4">
+            <p className="text-center text-[12px] text-muted-foreground/50 py-3">
               Busca un usuario para compartir esta conversación
             </p>
           )}
@@ -221,8 +255,8 @@ function UserAvatar({ user }: { user: SearchUser }) {
     )
   }
   return (
-    <div className="size-7 rounded-full bg-accent flex items-center justify-center shrink-0">
-      <span className="text-[11px] font-semibold text-muted-foreground">
+    <div className="size-7 rounded-full glass flex items-center justify-center shrink-0">
+      <span className="text-[11px] font-semibold text-foreground/60">
         {user.name.charAt(0).toUpperCase()}
       </span>
     </div>

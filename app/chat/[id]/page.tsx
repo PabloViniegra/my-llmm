@@ -27,6 +27,8 @@ export default async function ConversationPage({ params }: Props) {
       parts: [{ type: 'text' as const, text: m.content }],
     }))
 
+    const canShare = ownedConversation.messages.some((m) => m.role === 'assistant')
+
     return (
       <ChatView
         key={id}
@@ -34,6 +36,7 @@ export default async function ConversationPage({ params }: Props) {
         initialMessages={initialMessages}
         isReadOnly={false}
         isOwner={true}
+        canShare={canShare}
       />
     )
   }

@@ -16,6 +16,7 @@ interface ChatViewProps {
   isReadOnly?: boolean
   isOwner?: boolean
   ownerName?: string
+  canShare?: boolean
 }
 
 export function ChatView({
@@ -24,6 +25,7 @@ export function ChatView({
   isReadOnly = false,
   isOwner = false,
   ownerName,
+  canShare = false,
 }: ChatViewProps) {
   const router = useRouter()
   const [input, setInput] = useState('')
@@ -69,7 +71,7 @@ export function ChatView({
 
   return (
     <div className="flex flex-col h-dvh">
-      <ChatHeader conversationId={conversationId} isOwner={isOwner} />
+      <ChatHeader conversationId={conversationId} isOwner={isOwner && canShare} />
       {isReadOnly && ownerName && <ReadOnlyBanner ownerName={ownerName} />}
       <MessageList messages={messages} isLoading={isLoading} onSuggestion={handleSuggestion} />
       {error && (
