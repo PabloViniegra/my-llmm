@@ -42,6 +42,10 @@ export const metadata: Metadata = {
     title: 'LLM Chat',
     description: 'Chat con modelos de IA open-source vía OpenRouter.',
   },
+  icons: {
+    icon: '/icon-llm-chat.png',
+    apple: '/icon-llm-chat.png',
+  },
   robots: {
     index: false,
     follow: false,
