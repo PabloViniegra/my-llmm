@@ -87,12 +87,12 @@ export function ShareConversationModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="glass-lg border-0 ring-0 p-0 gap-0 overflow-hidden sm:max-w-sm rounded-2xl"
+        className="bg-popover/90 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-2xl ring-0 p-0 gap-0 overflow-hidden sm:max-w-sm rounded-2xl"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="size-7 rounded-xl glass flex items-center justify-center shrink-0">
+            <div className="size-7 rounded-xl bg-muted/80 flex items-center justify-center shrink-0">
               <UserPlus className="size-3.5 text-foreground/60" strokeWidth={1.8} />
             </div>
             <span className="text-[14px] font-semibold tracking-tight text-foreground/80 font-heading">
@@ -111,7 +111,7 @@ export function ShareConversationModal({
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-border/50 mx-5" />
+        <div className="h-px bg-border mx-5" />
 
         <div className="px-5 py-4 space-y-3">
           {/* Search input */}
@@ -122,9 +122,9 @@ export function ShareConversationModal({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className={cn(
-                'w-full glass-sm rounded-xl px-4 py-2.5 text-[13px] text-foreground/85',
-                'placeholder:text-muted-foreground/50 outline-none',
-                'focus:ring-1 focus:ring-ring transition-shadow',
+                'w-full bg-muted/50 rounded-xl px-4 py-2.5 text-[13px] text-foreground/85',
+                'placeholder:text-muted-foreground/50 outline-none border border-border/50',
+                'focus:ring-1 focus:ring-ring focus:border-ring/50 transition-shadow',
                 searching && 'pr-10',
               )}
             />
@@ -155,7 +155,7 @@ export function ShareConversationModal({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className="glass-sm rounded-xl overflow-hidden"
+                className="bg-muted/40 border border-border/60 rounded-xl overflow-hidden"
               >
                 {results.map((user, i) => (
                   <div
@@ -175,8 +175,8 @@ export function ShareConversationModal({
                       onClick={() => handleShare(user)}
                       className={cn(
                         'shrink-0 h-7 px-3 rounded-lg text-[12px] font-medium',
-                        'glass transition-opacity hover:opacity-80 active:scale-95',
-                        'text-foreground/70 disabled:opacity-40',
+                        'bg-accent/60 hover:bg-accent border border-border/60',
+                        'text-foreground/70 transition-colors active:scale-95 disabled:opacity-40',
                       )}
                     >
                       Añadir
@@ -255,7 +255,7 @@ function UserAvatar({ user }: { user: SearchUser }) {
     )
   }
   return (
-    <div className="size-7 rounded-full glass flex items-center justify-center shrink-0">
+    <div className="size-7 rounded-full bg-muted flex items-center justify-center shrink-0">
       <span className="text-[11px] font-semibold text-foreground/60">
         {user.name.charAt(0).toUpperCase()}
       </span>
