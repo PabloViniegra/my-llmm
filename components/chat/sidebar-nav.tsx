@@ -2,7 +2,8 @@
 
 import { Suspense } from 'react'
 import { m } from 'framer-motion'
-import { BotMessageSquare, Plus, Settings } from 'lucide-react'
+import { Plus, Settings } from 'lucide-react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/ui/mode-toggle'
@@ -19,9 +20,10 @@ const MotionButton = m.create(Button)
 
 interface SidebarNavProps {
   children?: React.ReactNode
+  sharedChildren?: React.ReactNode
 }
 
-export function SidebarNav({ children }: SidebarNavProps) {
+export function SidebarNav({ children, sharedChildren }: SidebarNavProps) {
   const router = useRouter()
 
   return (
@@ -34,8 +36,8 @@ export function SidebarNav({ children }: SidebarNavProps) {
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="flex items-center gap-2.5 group-data-[collapsible=icon]:hidden min-w-0"
         >
-          <div className="size-7 rounded-lg flex items-center justify-center shrink-0 bg-brand">
-            <BotMessageSquare className="size-4 text-brand-foreground" strokeWidth={1.75} />
+          <div className="size-7 rounded-lg overflow-hidden shrink-0">
+            <Image src="/icon-llm-chat.png" alt="LLM Chat" width={28} height={28} className="size-full object-cover" />
           </div>
           <span className="text-[13px] font-semibold tracking-tight text-foreground truncate font-mono">
             LLM<span className="text-muted-foreground font-sans font-medium"> Chat</span>
@@ -44,8 +46,8 @@ export function SidebarNav({ children }: SidebarNavProps) {
 
         {/* Collapsed: icon only */}
         <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center w-full">
-          <div className="size-7 rounded-lg flex items-center justify-center bg-brand">
-            <BotMessageSquare className="size-4 text-brand-foreground" strokeWidth={1.75} />
+          <div className="size-7 rounded-lg overflow-hidden">
+            <Image src="/icon-llm-chat.png" alt="LLM Chat" width={28} height={28} className="size-full object-cover" />
           </div>
         </div>
 
@@ -68,6 +70,7 @@ export function SidebarNav({ children }: SidebarNavProps) {
         <Suspense fallback={<ConversationListSkeleton />}>
           {children}
         </Suspense>
+        {sharedChildren}
       </SidebarContent>
 
       <SidebarFooter className="flex flex-row items-center justify-between gap-1.5 px-3 py-3 border-t border-sidebar-border">
