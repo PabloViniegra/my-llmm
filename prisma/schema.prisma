@@ -1,7 +1,6 @@
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -16,6 +15,7 @@ model Conversation {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   messages  Message[]
+  shares    ConversationShare[]
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -30,6 +30,22 @@ model Message {
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }
 
+model ConversationShare {
+  id               String       @id @default(cuid())
+  conversationId   String
+  sharedByUserId   String
+  sharedWithUserId String
+  createdAt        DateTime     @default(now())
+
+  conversation     Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sharedBy         User         @relation("SharedBy", fields: [sharedByUserId], references: [id], onDelete: Cascade)
+  sharedWith       User         @relation("SharedWith", fields: [sharedWithUserId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, sharedWithUserId])
+  @@index([sharedWithUserId])
+  @@index([conversationId])
+}
+
 model User {
   id            String    @id
   name          String
@@ -41,6 +57,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
   conversations Conversation[]
+  sharedByMe    ConversationShare[] @relation("SharedBy")
+  sharedWithMe  ConversationShare[] @relation("SharedWith")
 
   @@unique([email])
   @@map("user")
