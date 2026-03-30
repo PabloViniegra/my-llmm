@@ -1,12 +1,19 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
 import { Mail, SendHorizonal } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/glass/card'
+import Link from 'next/link'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/glass/card'
 import { Input } from '@/components/ui/glass/input'
 import { Label } from '@/components/ui/glass/label'
-import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
 
 export default function ForgotPasswordPage() {
@@ -19,12 +26,12 @@ export default function ForgotPasswordPage() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const { error } = await authClient.forgetPassword({
+    const { error } = await authClient.requestPasswordReset({
       email,
       redirectTo: '/reset-password',
     })
     if (error) {
-      setError(error.message ?? 'No se pudo enviar el correo')
+      setError(error.message ?? 'Could not send email')
     } else {
       setSent(true)
     }
@@ -34,11 +41,13 @@ export default function ForgotPasswordPage() {
   return (
     <Card className="w-full max-w-sm" variant="glass" animated>
       <CardHeader className="text-center">
-        <CardTitle className="font-heading text-2xl">Recuperar contraseña</CardTitle>
+        <CardTitle className="font-heading text-2xl">
+          Reset password
+        </CardTitle>
         <CardDescription>
           {sent
-            ? 'Revisa tu correo con las instrucciones'
-            : 'Te enviaremos un enlace para restablecer tu contraseña'}
+            ? 'Check your email for instructions'
+            : 'We\'ll send you a link to reset your password'}
         </CardDescription>
       </CardHeader>
 
@@ -46,11 +55,11 @@ export default function ForgotPasswordPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="email">Correo electrónico</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="tu@email.com"
+                placeholder="you@email.com"
                 icon={<Mail className="size-4" />}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -59,13 +68,11 @@ export default function ForgotPasswordPage() {
               />
             </div>
 
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
-            )}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
             <Button type="submit" className="w-full" disabled={loading}>
               <SendHorizonal className="size-4" />
-              {loading ? 'Enviando…' : 'Enviar enlace'}
+              {loading ? 'Sending…' : 'Send link'}
             </Button>
           </form>
         </CardContent>
@@ -73,7 +80,7 @@ export default function ForgotPasswordPage() {
 
       <CardFooter className="justify-center text-sm text-muted-foreground">
         <Link href="/sign-in" className="text-primary hover:underline">
-          Volver a iniciar sesión
+          Back to sign in
         </Link>
       </CardFooter>
     </Card>

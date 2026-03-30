@@ -29,7 +29,7 @@ export async function SharedConversationsList() {
       <div className="flex items-center gap-1.5 px-2 py-1">
         <Users className="size-3 text-muted-foreground/50" strokeWidth={1.8} />
         <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
-          Compartidas conmigo
+          Shared with me
         </span>
       </div>
       {shares.map((share) => (

@@ -35,8 +35,8 @@ export async function shareConversation(
     select: { id: true, name: true, email: true },
   })
 
-  if (!targetUser) return { error: 'Usuario no encontrado' }
-  if (targetUser.id === session.user.id) return { error: 'No puedes compartir contigo mismo' }
+  if (!targetUser) return { error: 'User not found' }
+  if (targetUser.id === session.user.id) return { error: 'You cannot share with yourself' }
 
   const existing = await db.conversationShare.findUnique({
     where: {
@@ -46,7 +46,7 @@ export async function shareConversation(
       },
     },
   })
-  if (existing) return { error: 'Ya tiene acceso a esta conversación' }
+  if (existing) return { error: 'This user already has access to this conversation' }
 
   await db.conversationShare.create({
     data: {

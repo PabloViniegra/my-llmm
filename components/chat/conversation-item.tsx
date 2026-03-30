@@ -101,7 +101,7 @@ export function ConversationItem({ id, title, updatedAt }: ConversationItemProps
               }}
             >
               <Pencil className="size-3.5" />
-              Renombrar
+              Rename
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
@@ -111,7 +111,7 @@ export function ConversationItem({ id, title, updatedAt }: ConversationItemProps
               }}
             >
               <Trash2 className="size-3.5" />
-              Eliminar
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -121,15 +121,15 @@ export function ConversationItem({ id, title, updatedAt }: ConversationItemProps
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¿Eliminar conversación?</DialogTitle>
-            <DialogDescription>Esta acción no se puede deshacer.</DialogDescription>
+            <DialogTitle>Delete conversation?</DialogTitle>
+            <DialogDescription>This action cannot be undone.</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setShowDeleteDialog(false)}>
-              Cancelar
+              Cancel
             </Button>
             <Button variant="destructive" onClick={handleDelete} disabled={isPending}>
-              Eliminar
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -139,20 +139,20 @@ export function ConversationItem({ id, title, updatedAt }: ConversationItemProps
       <Dialog open={showRenameDialog} onOpenChange={setShowRenameDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Renombrar conversación</DialogTitle>
+            <DialogTitle>Rename conversation</DialogTitle>
           </DialogHeader>
           <Input
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleRename()}
-            placeholder="Nombre de la conversación"
+            placeholder="Conversation name"
           />
           <DialogFooter>
             <Button variant="ghost" onClick={() => setShowRenameDialog(false)}>
-              Cancelar
+              Cancel
             </Button>
             <Button onClick={handleRename} disabled={isPending || !renameValue.trim()}>
-              Guardar
+              Save
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -168,10 +168,10 @@ function formatRelativeTime(date: Date): string {
   const diffHours = Math.floor(diffMins / 60)
   const diffDays = Math.floor(diffHours / 24)
 
-  if (diffMins < 1) return 'ahora'
-  if (diffMins < 60) return `hace ${diffMins}m`
-  if (diffHours < 24) return `hace ${diffHours}h`
-  if (diffDays === 1) return 'ayer'
-  if (diffDays < 7) return date.toLocaleDateString('es-ES', { weekday: 'short' })
-  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+  if (diffMins < 1) return 'just now'
+  if (diffMins < 60) return `${diffMins}m ago`
+  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffDays === 1) return 'yesterday'
+  if (diffDays < 7) return date.toLocaleDateString('en-US', { weekday: 'short' })
+  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
 }

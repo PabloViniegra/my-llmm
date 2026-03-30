@@ -1,13 +1,13 @@
 'use client'
 
-import { Suspense } from 'react'
 import { m } from 'framer-motion'
 import { Plus, Settings } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Suspense } from 'react'
+import { ConversationListSkeleton } from '@/components/chat/conversation-list-skeleton'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import { ConversationListSkeleton } from '@/components/chat/conversation-list-skeleton'
 import {
   Sidebar,
   SidebarContent,
@@ -37,17 +37,34 @@ export function SidebarNav({ children, sharedChildren }: SidebarNavProps) {
           className="flex items-center gap-2.5 group-data-[collapsible=icon]:hidden min-w-0"
         >
           <div className="size-7 rounded-lg overflow-hidden shrink-0">
-            <Image src="/icon-llm-chat.png" alt="LLM Chat" width={28} height={28} className="size-full object-cover" />
+            <Image
+              src="/icon-llm-chat.png"
+              alt="LLM Chat"
+              width={28}
+              height={28}
+              loading="eager"
+              className="size-full h-auto w-auto object-cover"
+            />
           </div>
           <span className="text-[13px] font-semibold tracking-tight text-foreground truncate font-mono">
-            LLM<span className="text-muted-foreground font-sans font-medium"> Chat</span>
+            LLM
+            <span className="text-muted-foreground font-sans font-medium">
+              {' '}
+              Chat
+            </span>
           </span>
         </m.div>
 
         {/* Collapsed: icon only */}
         <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center w-full">
           <div className="size-7 rounded-lg overflow-hidden">
-            <Image src="/icon-llm-chat.png" alt="LLM Chat" width={28} height={28} className="size-full object-cover" />
+            <Image
+              src="/icon-llm-chat.png"
+              alt="LLM Chat"
+              width={28}
+              height={28}
+              className="size-full h-auto w-auto object-cover"
+            />
           </div>
         </div>
 
@@ -59,7 +76,10 @@ export function SidebarNav({ children, sharedChildren }: SidebarNavProps) {
           variant="ghost"
           size="icon"
           aria-label="New conversation"
-          onClick={() => { router.push('/chat'); router.refresh() }}
+          onClick={() => {
+            router.push('/chat')
+            router.refresh()
+          }}
           className="shrink-0 size-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent group-data-[collapsible=icon]:hidden"
         >
           <Plus className="size-4" />
@@ -67,9 +87,7 @@ export function SidebarNav({ children, sharedChildren }: SidebarNavProps) {
       </SidebarHeader>
 
       <SidebarContent className="px-2 py-2 group-data-[collapsible=icon]:hidden overflow-y-auto">
-        <Suspense fallback={<ConversationListSkeleton />}>
-          {children}
-        </Suspense>
+        <Suspense fallback={<ConversationListSkeleton />}>{children}</Suspense>
         {sharedChildren}
       </SidebarContent>
 

@@ -48,7 +48,7 @@ async function generateTitleInBackground(
         messages: [
           {
             role: 'user',
-            content: `Genera un título de 4-6 palabras en español para esta conversación. Solo el título, sin puntuación ni comillas: ${firstMessage}`,
+            content: `Generate a 4-6 word title in English for this conversation. Just the title, no punctuation or quotes: ${firstMessage}`,
           },
         ],
         stream: true,

@@ -63,7 +63,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading, disabled 
           value={input}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={disabled ? 'Solo lectura' : 'Pregunta lo que quieras…'}
+          placeholder={disabled ? 'Read only' : 'Ask anything…'}
           rows={1}
           className="flex-1 resize-none border-none bg-transparent dark:bg-transparent shadow-none text-[14.5px] leading-relaxed min-h-[24px] max-h-[160px] p-0 placeholder:text-foreground/30 font-[inherit] focus-visible:ring-0 focus-visible:border-transparent"
           disabled={isLoading || disabled}
@@ -115,7 +115,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading, disabled 
       </div>
 
       <p className="text-center text-[10.5px] text-foreground/45 mt-2 tracking-wide">
-        {disabled ? '\u00a0' : 'Enter para enviar · Shift+Enter nueva línea'}
+        {disabled ? '\u00a0' : 'Enter to send · Shift+Enter for new line'}
       </p>
     </m.div>
   )

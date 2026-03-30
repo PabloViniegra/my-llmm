@@ -29,18 +29,18 @@ export const metadata: Metadata = {
     default: 'LLM Chat',
     template: '%s · LLM Chat',
   },
-  description: 'Chat con modelos de IA open-source vía OpenRouter. Rápido, privado, sin registro.',
+  description: 'Chat with open-source AI models via OpenRouter. Fast, private, no sign-up required.',
   metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL),
   openGraph: {
     title: 'LLM Chat',
-    description: 'Chat con modelos de IA open-source vía OpenRouter.',
+    description: 'Chat with open-source AI models via OpenRouter.',
     type: 'website',
-    locale: 'es_ES',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary',
     title: 'LLM Chat',
-    description: 'Chat con modelos de IA open-source vía OpenRouter.',
+    description: 'Chat with open-source AI models via OpenRouter.',
   },
   icons: {
     icon: '/icon-llm-chat.png',
@@ -56,7 +56,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${jetbrainsMono.variable} ${sora.variable} antialiased h-full`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${sora.variable} antialiased h-full`} suppressHydrationWarning>
       <body className="min-h-dvh flex flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="class"

@@ -96,7 +96,7 @@ export function ShareConversationModal({
               <UserPlus className="size-3.5 text-foreground/60" strokeWidth={1.8} />
             </div>
             <span className="text-[14px] font-semibold tracking-tight text-foreground/80 font-heading">
-              Compartir
+              Share
             </span>
           </div>
           <Button
@@ -106,7 +106,7 @@ export function ShareConversationModal({
             className="size-7 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent/40"
           >
             <X className="size-3.5" />
-            <span className="sr-only">Cerrar</span>
+            <span className="sr-only">Close</span>
           </Button>
         </div>
 
@@ -118,7 +118,7 @@ export function ShareConversationModal({
           <div className="relative">
             <input
               type="text"
-              placeholder="Buscar por nombre o email…"
+              placeholder="Search by name or email…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className={cn(
@@ -179,7 +179,7 @@ export function ShareConversationModal({
                         'text-foreground/70 transition-colors active:scale-95 disabled:opacity-40',
                       )}
                     >
-                      Añadir
+                      Add
                     </button>
                   </div>
                 ))}
@@ -198,7 +198,7 @@ export function ShareConversationModal({
                 <div className="flex items-center gap-1.5 px-1">
                   <Users className="size-3 text-muted-foreground/40" strokeWidth={1.8} />
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
-                    Con acceso
+                    With access
                   </span>
                 </div>
                 <div className="glass-sm rounded-xl overflow-hidden">
@@ -217,7 +217,7 @@ export function ShareConversationModal({
                       </div>
                       <button
                         disabled={isPending}
-                        aria-label={`Revocar acceso de ${share.sharedWith.name}`}
+                        aria-label={`Revoke access for ${share.sharedWith.name}`}
                         onClick={() => handleRevoke(share.sharedWith.id)}
                         className="size-6 shrink-0 rounded-lg flex items-center justify-center text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
                       >
@@ -233,7 +233,7 @@ export function ShareConversationModal({
           {/* Empty state */}
           {shares.length === 0 && query.length < 2 && (
             <p className="text-center text-[12px] text-muted-foreground/50 py-3">
-              Busca un usuario para compartir esta conversación
+              Search for a user to share this conversation
             </p>
           )}
         </div>

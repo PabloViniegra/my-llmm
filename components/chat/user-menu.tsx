@@ -58,7 +58,7 @@ export function UserMenu() {
           onClick={handleSignOut}
         >
           <LogOut className="size-4" />
-          Cerrar sesión
+          Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
