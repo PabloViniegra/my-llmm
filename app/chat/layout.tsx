@@ -7,6 +7,7 @@ import { SidebarNav } from '@/components/chat/sidebar-nav'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { ConversationList } from '@/components/chat/conversation-list'
 import { ConversationListSkeleton } from '@/components/chat/conversation-list-skeleton'
+import { SharedConversationsList } from '@/components/chat/shared-conversations-list'
 
 export default async function ChatLayout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -16,7 +17,13 @@ export default async function ChatLayout({ children }: { children: React.ReactNo
     <SidebarProvider defaultOpen={false}>
       <div className="relative flex min-h-dvh w-full">
         <MeshBackground />
-        <SidebarNav>
+        <SidebarNav
+          sharedChildren={
+            <Suspense fallback={null}>
+              <SharedConversationsList />
+            </Suspense>
+          }
+        >
           <Suspense fallback={<ConversationListSkeleton />}>
             <ConversationList />
           </Suspense>

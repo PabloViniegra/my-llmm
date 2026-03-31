@@ -13,17 +13,18 @@ interface ChatInputProps {
   onInputChange: (value: string) => void
   onSubmit: () => void
   isLoading: boolean
+  disabled?: boolean
 }
 
-export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInputProps) {
+export function ChatInput({ input, onInputChange, onSubmit, isLoading, disabled = false }: ChatInputProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      if (input.trim() && !isLoading) onSubmit()
+      if (input.trim() && !isLoading && !disabled) onSubmit()
     }
   }
 
-  const canSubmit = Boolean(input.trim()) && !isLoading
+  const canSubmit = Boolean(input.trim()) && !isLoading && !disabled
 
   return (
     <m.div
@@ -55,21 +56,22 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
         className={cn(
           'relative flex items-center gap-2 rounded-full px-5 py-3 glass-lg',
           isLoading && 'ring-1 ring-[var(--shadow-brand-sm)]',
+          disabled && 'opacity-50 cursor-not-allowed',
         )}
       >
         <Textarea
           value={input}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Pregunta lo que quieras…"
+          placeholder={disabled ? 'Read only' : 'Ask anything…'}
           rows={1}
           className="flex-1 resize-none border-none bg-transparent dark:bg-transparent shadow-none text-[14.5px] leading-relaxed min-h-[24px] max-h-[160px] p-0 placeholder:text-foreground/30 font-[inherit] focus-visible:ring-0 focus-visible:border-transparent"
-          disabled={isLoading}
+          disabled={isLoading || disabled}
           aria-label="Chat input"
         />
 
         <MotionButton
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: disabled ? 1 : 0.9 }}
           whileHover={{ scale: canSubmit || isLoading ? 1.08 : 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 22 }}
           onClick={onSubmit}
@@ -113,7 +115,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading }: ChatInp
       </div>
 
       <p className="text-center text-[10.5px] text-foreground/45 mt-2 tracking-wide">
-        Enter para enviar · Shift+Enter nueva línea
+        {disabled ? '\u00a0' : 'Enter to send · Shift+Enter for new line'}
       </p>
     </m.div>
   )

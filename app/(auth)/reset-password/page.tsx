@@ -25,13 +25,13 @@ function ResetPasswordForm() {
     e.preventDefault()
     setError(null)
     if (password !== confirm) {
-      setError('Las contraseñas no coinciden')
+      setError('Passwords do not match')
       return
     }
     setLoading(true)
     const { error } = await authClient.resetPassword({ newPassword: password, token })
     if (error) {
-      setError(error.message ?? 'No se pudo restablecer la contraseña')
+      setError(error.message ?? 'Could not reset password')
       setLoading(false)
     } else {
       setDone(true)
@@ -44,7 +44,7 @@ function ResetPasswordForm() {
       <div className="flex flex-col items-center gap-3 py-4 text-center">
         <CheckCircle className="size-10 text-primary" />
         <p className="text-sm text-muted-foreground">
-          Contraseña actualizada. Redirigiendo…
+          Password updated. Redirecting…
         </p>
       </div>
     )
@@ -53,11 +53,11 @@ function ResetPasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="password">Nueva contraseña</Label>
+        <Label htmlFor="password">New password</Label>
         <Input
           id="password"
           type="password"
-          placeholder="Mínimo 8 caracteres"
+          placeholder="At least 8 characters"
           icon={<Lock className="size-4" />}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -68,11 +68,11 @@ function ResetPasswordForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="confirm">Confirmar contraseña</Label>
+        <Label htmlFor="confirm">Confirm password</Label>
         <Input
           id="confirm"
           type="password"
-          placeholder="Repite la contraseña"
+          placeholder="Repeat your password"
           icon={<Lock className="size-4" />}
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
@@ -86,7 +86,7 @@ function ResetPasswordForm() {
       )}
 
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? 'Guardando…' : 'Restablecer contraseña'}
+        {loading ? 'Saving…' : 'Reset password'}
       </Button>
     </form>
   )
@@ -96,8 +96,8 @@ export default function ResetPasswordPage() {
   return (
     <Card className="w-full max-w-sm" variant="glass" animated>
       <CardHeader className="text-center">
-        <CardTitle className="font-heading text-2xl">Nueva contraseña</CardTitle>
-        <CardDescription>Elige una contraseña segura</CardDescription>
+        <CardTitle className="font-heading text-2xl">New password</CardTitle>
+        <CardDescription>Choose a strong password</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
 
       <CardFooter className="justify-center text-sm text-muted-foreground">
         <Link href="/sign-in" className="text-primary hover:underline">
-          Volver a iniciar sesión
+          Back to sign in
         </Link>
       </CardFooter>
     </Card>

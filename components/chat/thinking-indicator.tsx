@@ -49,7 +49,7 @@ export function ThinkingIndicator() {
             />
           ))}
         </div>
-        <span className="sr-only">La IA está pensando</span>
+        <span className="sr-only">AI is thinking</span>
       </m.div>
     </m.output>
   )

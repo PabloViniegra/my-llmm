@@ -14,17 +14,65 @@ export default async function ConversationPage({ params }: Props) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session) redirect('/sign-in')
 
-  const conversation = await db.conversation.findUnique({
+  // Check owner access first
+  const ownedConversation = await db.conversation.findUnique({
     where: { id, userId: session.user.id },
     include: { messages: { orderBy: { createdAt: 'asc' } } },
   })
-  if (!conversation) notFound()
 
-  const initialMessages: UIMessage[] = conversation.messages.map((m) => ({
+  if (ownedConversation) {
+    const initialMessages: UIMessage[] = ownedConversation.messages.map((m) => ({
+      id: m.id,
+      role: m.role as 'user' | 'assistant',
+      parts: [{ type: 'text' as const, text: m.content }],
+    }))
+
+    const canShare = ownedConversation.messages.some((m) => m.role === 'assistant')
+
+    return (
+      <ChatView
+        key={id}
+        conversationId={id}
+        initialMessages={initialMessages}
+        isReadOnly={false}
+        isOwner={true}
+        canShare={canShare}
+      />
+    )
+  }
+
+  // Check shared access
+  const share = await db.conversationShare.findUnique({
+    where: {
+      conversationId_sharedWithUserId: {
+        conversationId: id,
+        sharedWithUserId: session.user.id,
+      },
+    },
+    include: {
+      conversation: {
+        include: { messages: { orderBy: { createdAt: 'asc' } } },
+      },
+      sharedBy: { select: { name: true } },
+    },
+  })
+
+  if (!share) notFound()
+
+  const initialMessages: UIMessage[] = share.conversation.messages.map((m) => ({
     id: m.id,
     role: m.role as 'user' | 'assistant',
     parts: [{ type: 'text' as const, text: m.content }],
   }))
 
-  return <ChatView key={id} conversationId={id} initialMessages={initialMessages} />
+  return (
+    <ChatView
+      key={id}
+      conversationId={id}
+      initialMessages={initialMessages}
+      isReadOnly={true}
+      isOwner={false}
+      ownerName={share.sharedBy.name}
+    />
+  )
 }

@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 import { ConversationGroup } from '@/components/chat/conversation-group'
 import { ConversationItem } from '@/components/chat/conversation-item'
 
-const GROUP_ORDER = ['Hoy', 'Ayer', 'Esta semana', 'Más antiguo'] as const
+const GROUP_ORDER = ['Today', 'Yesterday', 'This week', 'Older'] as const
 type GroupLabel = (typeof GROUP_ORDER)[number]
 
 function getDateGroup(date: Date): GroupLabel {
@@ -15,10 +15,10 @@ function getDateGroup(date: Date): GroupLabel {
   const weekAgo = new Date(today.getTime() - 7 * 86_400_000)
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
 
-  if (d.getTime() === today.getTime()) return 'Hoy'
-  if (d.getTime() === yesterday.getTime()) return 'Ayer'
-  if (d.getTime() > weekAgo.getTime()) return 'Esta semana'
-  return 'Más antiguo'
+  if (d.getTime() === today.getTime()) return 'Today'
+  if (d.getTime() === yesterday.getTime()) return 'Yesterday'
+  if (d.getTime() > weekAgo.getTime()) return 'This week'
+  return 'Older'
 }
 
 export async function ConversationList() {
@@ -37,7 +37,7 @@ export async function ConversationList() {
       <div className="px-2 py-8 flex flex-col items-center gap-2 text-center">
         <MessageSquare className="size-5 text-muted-foreground/30" strokeWidth={1.5} />
         <p className="text-[11px] text-muted-foreground/50 leading-relaxed">
-          Inicia una nueva conversación
+          Start a new conversation
         </p>
       </div>
     )

@@ -23,17 +23,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Tagline */}
         <div className="relative space-y-2">
           <p className="text-white/85 text-xl font-semibold leading-snug">
-            Conversa con los mejores<br />modelos de IA, sin costo.
+            Chat with the best<br />AI models, for free.
           </p>
           <p className="text-white/40 text-sm tracking-widest uppercase">
-            Rápido · Privado · Open source
+            Fast · Private · Open source
           </p>
         </div>
 
         {/* Decorative monospace hint */}
         <div className="relative font-mono text-[11px] text-white/20 leading-6">
-          <div>&gt; ¿En qué puedo ayudarte hoy?</div>
-          <div className="mt-1">█ Escribe tu primera pregunta…</div>
+          <div>&gt; What can I help you with today?</div>
+          <div className="mt-1">█ Type your first question…</div>
         </div>
       </aside>
 

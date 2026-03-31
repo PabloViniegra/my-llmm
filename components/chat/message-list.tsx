@@ -18,9 +18,9 @@ interface MessageListProps {
 }
 
 const suggestions = [
-  'Explícame cómo aprenden las redes neuronales',
-  'Escríbeme una función en Python',
-  'Genera ideas para un producto',
+  'Explain how neural networks learn',
+  'Write me a function in Python',
+  'Generate ideas for a product',
 ]
 
 export function MessageList({ messages, isLoading, onSuggestion }: MessageListProps) {
@@ -80,10 +80,10 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
               className="space-y-1.5"
             >
               <h2 className="text-[18px] font-semibold tracking-tight text-foreground">
-                ¿En qué te puedo ayudar?
+                How can I help you?
               </h2>
               <p className="text-[13px] text-muted-foreground leading-relaxed">
-                Impulsado por modelos open-source vía OpenRouter.
+                Powered by open-source models via OpenRouter.
               </p>
             </m.div>
 
@@ -123,7 +123,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
         >
           <div
             role="log"
-            aria-label="Mensajes del chat"
+            aria-label="Chat messages"
             aria-live="polite"
             className="flex flex-col gap-4 py-6 max-w-2xl mx-auto"
           >

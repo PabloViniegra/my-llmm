@@ -18,7 +18,7 @@ export const MessageBubble = memo(function MessageBubble({ role, content }: Mess
   return (
     <m.div
       role="article"
-      aria-label={isUser ? 'Tu mensaje' : 'Respuesta del asistente'}
+      aria-label={isUser ? 'Your message' : 'Assistant response'}
       initial={{ opacity: 0, y: 10, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 340, damping: 28 }}
