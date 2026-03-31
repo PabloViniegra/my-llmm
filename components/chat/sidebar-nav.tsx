@@ -78,7 +78,6 @@ export function SidebarNav({ children, sharedChildren }: SidebarNavProps) {
           aria-label="New conversation"
           onClick={() => {
             router.push('/chat')
-            router.refresh()
           }}
           className="shrink-0 size-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent group-data-[collapsible=icon]:hidden"
         >

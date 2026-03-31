@@ -1,9 +1,9 @@
-import { headers } from 'next/headers'
 import { MessageSquare } from 'lucide-react'
-import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { headers } from 'next/headers'
 import { ConversationGroup } from '@/components/chat/conversation-group'
 import { ConversationItem } from '@/components/chat/conversation-item'
+import { auth } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 const GROUP_ORDER = ['Today', 'Yesterday', 'This week', 'Older'] as const
 type GroupLabel = (typeof GROUP_ORDER)[number]
@@ -26,7 +26,14 @@ export async function ConversationList() {
   if (!session) return null
 
   const conversations = await db.conversation.findMany({
-    where: { userId: session.user.id },
+    where: {
+      userId: session.user.id,
+      messages: {
+        some: {
+          role: 'assistant',
+        },
+      },
+    },
     orderBy: { updatedAt: 'desc' },
     take: 50,
     select: { id: true, title: true, updatedAt: true },
@@ -35,7 +42,10 @@ export async function ConversationList() {
   if (conversations.length === 0) {
     return (
       <div className="px-2 py-8 flex flex-col items-center gap-2 text-center">
-        <MessageSquare className="size-5 text-muted-foreground/30" strokeWidth={1.5} />
+        <MessageSquare
+          className="size-5 text-muted-foreground/30"
+          strokeWidth={1.5}
+        />
         <p className="text-[11px] text-muted-foreground/50 leading-relaxed">
           Start a new conversation
         </p>
@@ -46,15 +56,19 @@ export async function ConversationList() {
   const grouped = new Map<GroupLabel, typeof conversations>()
   for (const conv of conversations) {
     const group = getDateGroup(conv.updatedAt)
-    if (!grouped.has(group)) grouped.set(group, [])
-    grouped.get(group)!.push(conv)
+    const current = grouped.get(group)
+    if (current) {
+      current.push(conv)
+    } else {
+      grouped.set(group, [conv])
+    }
   }
 
   return (
     <div className="flex flex-col gap-1">
       {GROUP_ORDER.filter((g) => grouped.has(g)).map((group) => (
         <ConversationGroup key={group} label={group}>
-          {grouped.get(group)!.map((conv) => (
+          {(grouped.get(group) ?? []).map((conv) => (
             <ConversationItem
               key={conv.id}
               id={conv.id}

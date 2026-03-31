@@ -1,15 +1,24 @@
-import { headers } from 'next/headers'
 import { Users } from 'lucide-react'
+import { headers } from 'next/headers'
+import { SharedConversationItem } from '@/components/chat/shared-conversation-item'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { SharedConversationItem } from '@/components/chat/shared-conversation-item'
 
 export async function SharedConversationsList() {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session) return null
 
   const shares = await db.conversationShare.findMany({
-    where: { sharedWithUserId: session.user.id },
+    where: {
+      sharedWithUserId: session.user.id,
+      conversation: {
+        messages: {
+          some: {
+            role: 'assistant',
+          },
+        },
+      },
+    },
     include: {
       conversation: {
         select: { id: true, title: true, updatedAt: true },
