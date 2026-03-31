@@ -24,12 +24,13 @@ const UserMenu = dynamic(
 
 interface ChatHeaderProps {
   conversationId?: string
-  isOwner?: boolean
+  /** When true the share button is shown. Derives from ChatMode on the parent. */
+  canShare?: boolean
 }
 
 export function ChatHeader({
   conversationId,
-  isOwner = false,
+  canShare = false,
 }: ChatHeaderProps) {
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -87,7 +88,7 @@ export function ChatHeader({
 
         {/* Right: share + theme + new */}
         <div className="flex items-center gap-2">
-          {isOwner && conversationId && (
+          {canShare && conversationId && (
             <>
               <Tooltip>
                 <TooltipTrigger

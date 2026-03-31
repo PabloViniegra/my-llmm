@@ -1,9 +1,9 @@
-import { notFound, redirect } from 'next/navigation'
+import type { UIMessage } from '@ai-sdk/react'
 import { headers } from 'next/headers'
+import { notFound, redirect } from 'next/navigation'
+import { ChatView } from '@/components/chat/chat-view'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { ChatView } from '@/components/chat/chat-view'
-import type { UIMessage } from '@ai-sdk/react'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -21,22 +21,24 @@ export default async function ConversationPage({ params }: Props) {
   })
 
   if (ownedConversation) {
-    const initialMessages: UIMessage[] = ownedConversation.messages.map((m) => ({
-      id: m.id,
-      role: m.role as 'user' | 'assistant',
-      parts: [{ type: 'text' as const, text: m.content }],
-    }))
+    const initialMessages: UIMessage[] = ownedConversation.messages.map(
+      (m) => ({
+        id: m.id,
+        role: m.role as 'user' | 'assistant',
+        parts: [{ type: 'text' as const, text: m.content }],
+      }),
+    )
 
-    const canShare = ownedConversation.messages.some((m) => m.role === 'assistant')
+    const canShare = ownedConversation.messages.some(
+      (m) => m.role === 'assistant',
+    )
 
     return (
       <ChatView
         key={id}
         conversationId={id}
         initialMessages={initialMessages}
-        isReadOnly={false}
-        isOwner={true}
-        canShare={canShare}
+        mode={{ kind: 'owner', canShare }}
       />
     )
   }
@@ -70,9 +72,7 @@ export default async function ConversationPage({ params }: Props) {
       key={id}
       conversationId={id}
       initialMessages={initialMessages}
-      isReadOnly={true}
-      isOwner={false}
-      ownerName={share.sharedBy.name}
+      mode={{ kind: 'viewer', ownerName: share.sharedBy.name ?? '' }}
     />
   )
 }

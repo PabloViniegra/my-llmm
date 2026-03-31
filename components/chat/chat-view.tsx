@@ -1,39 +1,46 @@
 'use client'
 
-import { useChat } from '@ai-sdk/react'
 import type { UIMessage } from '@ai-sdk/react'
+import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
-import { useMemo, useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChatHeader } from '@/components/chat/chat-header'
 import { ChatInput } from '@/components/chat/chat-input'
 import { MessageList } from '@/components/chat/message-list'
 import { ReadOnlyBanner } from '@/components/chat/read-only-banner'
 
+/**
+ * Discriminated union representing the user's access level for the conversation.
+ *
+ * - `owner`:  current user owns the conversation; canShare controls the share button.
+ * - `viewer`: current user has read-only access via a share link.
+ */
+export type ChatMode =
+  | { kind: 'owner'; canShare: boolean }
+  | { kind: 'viewer'; ownerName: string }
+
 interface ChatViewProps {
   conversationId: string
   initialMessages?: UIMessage[]
-  isReadOnly?: boolean
-  isOwner?: boolean
-  ownerName?: string
-  canShare?: boolean
+  mode: ChatMode
 }
 
 export function ChatView({
   conversationId,
   initialMessages,
-  isReadOnly = false,
-  isOwner = false,
-  ownerName,
-  canShare = false,
+  mode,
 }: ChatViewProps) {
   const router = useRouter()
   const [input, setInput] = useState('')
   const lastInputRef = useRef('')
   const prevIsLoadingRef = useRef(false)
 
+  const isReadOnly = mode.kind === 'viewer'
+
   const transport = useMemo(
-    () => new DefaultChatTransport({ api: '/api/chat', body: { conversationId } }),
+    () =>
+      new DefaultChatTransport({ api: '/api/chat', body: { conversationId } }),
     [conversationId],
   )
 
@@ -71,9 +78,16 @@ export function ChatView({
 
   return (
     <div className="flex flex-col h-dvh">
-      <ChatHeader conversationId={conversationId} isOwner={isOwner && canShare} />
-      {isReadOnly && ownerName && <ReadOnlyBanner ownerName={ownerName} />}
-      <MessageList messages={messages} isLoading={isLoading} onSuggestion={handleSuggestion} />
+      <ChatHeader
+        conversationId={conversationId}
+        canShare={mode.kind === 'owner' && mode.canShare}
+      />
+      {mode.kind === 'viewer' && <ReadOnlyBanner ownerName={mode.ownerName} />}
+      <MessageList
+        messages={messages}
+        isLoading={isLoading}
+        onSuggestion={handleSuggestion}
+      />
       {error && (
         <div role="alert" className="mx-auto max-w-2xl w-full px-4 py-2">
           <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl glass text-sm text-destructive">

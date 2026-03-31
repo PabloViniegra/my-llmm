@@ -1,25 +1,16 @@
 'use client'
 
-import { useEffect, useState, useTransition, useCallback } from 'react'
-import { UserPlus, X, Loader2, Users } from 'lucide-react'
+import { AnimatePresence, m } from 'framer-motion'
+import { Loader2, UserPlus, Users, X } from 'lucide-react'
 import Image from 'next/image'
-import { m, AnimatePresence } from 'framer-motion'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import {
+  type ShareEntry,
+  type ShareUser,
+  useShareConversation,
+} from '@/hooks/use-share-conversation'
 import { cn } from '@/lib/utils'
-import { shareConversation, revokeShare, getConversationShares } from '@/lib/actions/shares'
-
-interface SearchUser {
-  id: string
-  name: string
-  email: string
-  image: string | null
-}
-
-interface ShareEntry {
-  id: string
-  sharedWith: SearchUser
-}
 
 interface ShareConversationModalProps {
   conversationId: string
@@ -32,56 +23,17 @@ export function ShareConversationModal({
   open,
   onOpenChange,
 }: ShareConversationModalProps) {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState<SearchUser[]>([])
-  const [shares, setShares] = useState<ShareEntry[]>([])
-  const [searching, setSearching] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    if (!open) return
-    getConversationShares(conversationId).then((data) => {
-      setShares(data.map((s) => ({ id: s.id, sharedWith: s.sharedWith as SearchUser })))
-    })
-  }, [open, conversationId])
-
-  useEffect(() => {
-    if (query.length < 2) { setResults([]); return }
-    const timer = setTimeout(async () => {
-      setSearching(true)
-      const excludeIds = shares.map((s) => s.sharedWith.id).join(',')
-      const res = await fetch(`/api/users/search?q=${encodeURIComponent(query)}&exclude=${excludeIds}`)
-      const data = await res.json()
-      setResults(data.users ?? [])
-      setSearching(false)
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [query, shares])
-
-  const handleShare = useCallback(
-    (user: SearchUser) => {
-      setError(null)
-      startTransition(async () => {
-        const result = await shareConversation(conversationId, user.email)
-        if (result.error) { setError(result.error); return }
-        setShares((prev) => [...prev, { id: crypto.randomUUID(), sharedWith: user }])
-        setResults((prev) => prev.filter((u) => u.id !== user.id))
-        setQuery('')
-      })
-    },
-    [conversationId],
-  )
-
-  const handleRevoke = useCallback(
-    (userId: string) => {
-      startTransition(async () => {
-        await revokeShare(conversationId, userId)
-        setShares((prev) => prev.filter((s) => s.sharedWith.id !== userId))
-      })
-    },
-    [conversationId],
-  )
+  const {
+    query,
+    setQuery,
+    results,
+    shares,
+    searching,
+    error,
+    isPending,
+    handleShare,
+    handleRevoke,
+  } = useShareConversation(conversationId, open)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -93,7 +45,10 @@ export function ShareConversationModal({
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <div className="flex items-center gap-2.5">
             <div className="size-7 rounded-xl bg-muted/80 flex items-center justify-center shrink-0">
-              <UserPlus className="size-3.5 text-foreground/60" strokeWidth={1.8} />
+              <UserPlus
+                className="size-3.5 text-foreground/60"
+                strokeWidth={1.8}
+              />
             </div>
             <span className="text-[14px] font-semibold tracking-tight text-foreground/80 font-heading">
               Share
@@ -158,30 +113,13 @@ export function ShareConversationModal({
                 className="bg-muted/40 border border-border/60 rounded-xl overflow-hidden"
               >
                 {results.map((user, i) => (
-                  <div
+                  <SearchResultRow
                     key={user.id}
-                    className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 hover:bg-accent/30 transition-colors',
-                      i > 0 && 'border-t border-border/40',
-                    )}
-                  >
-                    <UserAvatar user={user} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate text-foreground/85">{user.name}</p>
-                      <p className="text-[11px] text-muted-foreground/60 truncate">{user.email}</p>
-                    </div>
-                    <button
-                      disabled={isPending}
-                      onClick={() => handleShare(user)}
-                      className={cn(
-                        'shrink-0 h-7 px-3 rounded-lg text-[12px] font-medium',
-                        'bg-accent/60 hover:bg-accent border border-border/60',
-                        'text-foreground/70 transition-colors active:scale-95 disabled:opacity-40',
-                      )}
-                    >
-                      Add
-                    </button>
-                  </div>
+                    user={user}
+                    index={i}
+                    isPending={isPending}
+                    onAdd={handleShare}
+                  />
                 ))}
               </m.div>
             )}
@@ -196,34 +134,23 @@ export function ShareConversationModal({
                 className="space-y-1.5"
               >
                 <div className="flex items-center gap-1.5 px-1">
-                  <Users className="size-3 text-muted-foreground/40" strokeWidth={1.8} />
+                  <Users
+                    className="size-3 text-muted-foreground/40"
+                    strokeWidth={1.8}
+                  />
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">
                     With access
                   </span>
                 </div>
                 <div className="glass-sm rounded-xl overflow-hidden">
                   {shares.map((share, i) => (
-                    <div
+                    <ShareEntryRow
                       key={share.id}
-                      className={cn(
-                        'flex items-center gap-3 px-3 py-2.5',
-                        i > 0 && 'border-t border-border/40',
-                      )}
-                    >
-                      <UserAvatar user={share.sharedWith} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium truncate text-foreground/85">{share.sharedWith.name}</p>
-                        <p className="text-[11px] text-muted-foreground/60 truncate">{share.sharedWith.email}</p>
-                      </div>
-                      <button
-                        disabled={isPending}
-                        aria-label={`Revoke access for ${share.sharedWith.name}`}
-                        onClick={() => handleRevoke(share.sharedWith.id)}
-                        className="size-6 shrink-0 rounded-lg flex items-center justify-center text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
-                      >
-                        <X className="size-3" />
-                      </button>
-                    </div>
+                      entry={share}
+                      index={i}
+                      isPending={isPending}
+                      onRevoke={handleRevoke}
+                    />
                   ))}
                 </div>
               </m.div>
@@ -242,7 +169,98 @@ export function ShareConversationModal({
   )
 }
 
-function UserAvatar({ user }: { user: SearchUser }) {
+// ---------------------------------------------------------------------------
+// Sub-components (private, co-located for readability)
+// ---------------------------------------------------------------------------
+
+interface SearchResultRowProps {
+  user: ShareUser
+  index: number
+  isPending: boolean
+  onAdd: (user: ShareUser) => void
+}
+
+function SearchResultRow({
+  user,
+  index,
+  isPending,
+  onAdd,
+}: SearchResultRowProps) {
+  return (
+    <div
+      className={cn(
+        'flex items-center gap-3 px-3 py-2.5 hover:bg-accent/30 transition-colors',
+        index > 0 && 'border-t border-border/40',
+      )}
+    >
+      <UserAvatar user={user} />
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-medium truncate text-foreground/85">
+          {user.name}
+        </p>
+        <p className="text-[11px] text-muted-foreground/60 truncate">
+          {user.email}
+        </p>
+      </div>
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={() => onAdd(user)}
+        className={cn(
+          'shrink-0 h-7 px-3 rounded-lg text-[12px] font-medium',
+          'bg-accent/60 hover:bg-accent border border-border/60',
+          'text-foreground/70 transition-colors active:scale-95 disabled:opacity-40',
+        )}
+      >
+        Add
+      </button>
+    </div>
+  )
+}
+
+interface ShareEntryRowProps {
+  entry: ShareEntry
+  index: number
+  isPending: boolean
+  onRevoke: (userId: string) => void
+}
+
+function ShareEntryRow({
+  entry,
+  index,
+  isPending,
+  onRevoke,
+}: ShareEntryRowProps) {
+  return (
+    <div
+      className={cn(
+        'flex items-center gap-3 px-3 py-2.5',
+        index > 0 && 'border-t border-border/40',
+      )}
+    >
+      <UserAvatar user={entry.sharedWith} />
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-medium truncate text-foreground/85">
+          {entry.sharedWith.name}
+        </p>
+        <p className="text-[11px] text-muted-foreground/60 truncate">
+          {entry.sharedWith.email}
+        </p>
+      </div>
+      <button
+        type="button"
+        disabled={isPending}
+        aria-label={`Revoke access for ${entry.sharedWith.name}`}
+        onClick={() => onRevoke(entry.sharedWith.id)}
+        className="size-6 shrink-0 rounded-lg flex items-center justify-center text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+      >
+        <X className="size-3" />
+      </button>
+    </div>
+  )
+}
+
+function UserAvatar({ user }: { user: ShareUser }) {
   if (user.image) {
     return (
       <Image

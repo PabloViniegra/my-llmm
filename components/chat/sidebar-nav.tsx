@@ -4,8 +4,6 @@ import { m } from 'framer-motion'
 import { Plus, Settings } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Suspense } from 'react'
-import { ConversationListSkeleton } from '@/components/chat/conversation-list-skeleton'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/ui/mode-toggle'
 import {
@@ -20,10 +18,9 @@ const MotionButton = m.create(Button)
 
 interface SidebarNavProps {
   children?: React.ReactNode
-  sharedChildren?: React.ReactNode
 }
 
-export function SidebarNav({ children, sharedChildren }: SidebarNavProps) {
+export function SidebarNav({ children }: SidebarNavProps) {
   const router = useRouter()
 
   return (
@@ -86,8 +83,7 @@ export function SidebarNav({ children, sharedChildren }: SidebarNavProps) {
       </SidebarHeader>
 
       <SidebarContent className="px-2 py-2 group-data-[collapsible=icon]:hidden overflow-y-auto">
-        <Suspense fallback={<ConversationListSkeleton />}>{children}</Suspense>
-        {sharedChildren}
+        {children}
       </SidebarContent>
 
       <SidebarFooter className="flex flex-row items-center justify-between gap-1.5 px-3 py-3 border-t border-sidebar-border">
