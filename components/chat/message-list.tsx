@@ -3,7 +3,7 @@
 import type { UIMessage } from 'ai'
 import { isTextUIPart } from 'ai'
 import { AnimatePresence, m } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
+import Image from 'next/image'
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { MessageBubble } from './message-bubble'
@@ -67,14 +67,49 @@ export function MessageList({
               }}
               className="flex items-center justify-center"
             >
-              <div
-                className="size-14 rounded-full flex items-center justify-center brand-gradient"
+              <m.div
+                className="relative size-14 rounded-full flex items-center justify-center brand-gradient cursor-default group"
                 style={{
                   boxShadow: '0 4px 24px var(--shadow-brand)',
                 }}
+                whileHover="hover"
+                initial="initial"
               >
-                <Sparkles className="size-7 text-white" strokeWidth={1.5} />
-              </div>
+                {/* Glowing pulse effect that triggers on hover */}
+                <m.div
+                  className="absolute inset-0 rounded-full bg-white/30"
+                  variants={{
+                    initial: { scale: 1, opacity: 0 },
+                    hover: { 
+                      scale: 1.6, 
+                      opacity: 0, 
+                      transition: { duration: 1, ease: "easeOut", repeat: Infinity } 
+                    }
+                  }}
+                />
+                
+                {/* The icon itself, scaling and rotating like a mechanical core */}
+                <m.div
+                  className="relative z-10 flex items-center justify-center"
+                  variants={{
+                    initial: { rotate: 0, scale: 1 },
+                    hover: { 
+                      rotate: 180, 
+                      scale: 1.15,
+                      transition: { type: "spring", stiffness: 150, damping: 12, mass: 0.8 }
+                    }
+                  }}
+                >
+                  <Image 
+                    src="/images/hero-icon.webp" 
+                    alt="AI Assistant" 
+                    width={36} 
+                    height={36} 
+                    className="object-contain drop-shadow-sm"
+                    priority
+                  />
+                </m.div>
+              </m.div>
             </m.div>
 
             <m.div
