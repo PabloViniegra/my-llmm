@@ -23,13 +23,20 @@ const suggestions = [
   'Generate ideas for a product',
 ]
 
-export function MessageList({ messages, isLoading, onSuggestion }: MessageListProps) {
+export function MessageList({
+  messages,
+  isLoading,
+  onSuggestion,
+}: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (!isLoading && messages.length === 0) return
+
     const raf = requestAnimationFrame(() => {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     })
+
     return () => cancelAnimationFrame(raf)
   }, [messages.length, isLoading])
 
@@ -46,7 +53,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.97 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-1 items-center justify-center px-4"
+          className="flex min-h-0 flex-1 items-center justify-center px-4"
         >
           <div className="text-center max-w-sm space-y-5">
             <m.div
@@ -66,17 +73,18 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
                   boxShadow: '0 4px 24px var(--shadow-brand)',
                 }}
               >
-                <Sparkles
-                  className="size-7 text-white"
-                  strokeWidth={1.5}
-                />
+                <Sparkles className="size-7 text-white" strokeWidth={1.5} />
               </div>
             </m.div>
 
             <m.div
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.16, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                delay: 0.16,
+                duration: 0.3,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="space-y-1.5"
             >
               <h2 className="text-[18px] font-semibold tracking-tight text-foreground">
@@ -90,7 +98,11 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
             <m.div
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.24, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                delay: 0.24,
+                duration: 0.3,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="flex flex-wrap gap-2 justify-center"
             >
               {suggestions.map((suggestion, i) => (
@@ -119,7 +131,7 @@ export function MessageList({ messages, isLoading, onSuggestion }: MessageListPr
       ) : (
         <div
           key="message-list"
-          className="flex-1 overflow-y-scroll px-4"
+          className="flex-1 min-h-0 overflow-y-auto px-4 [scrollbar-gutter:stable]"
         >
           <div
             role="log"
