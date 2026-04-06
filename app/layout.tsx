@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono, Sora } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { MotionProvider } from '@/components/motion-provider'
@@ -23,6 +23,12 @@ const sora = Sora({
   display: 'swap',
   weight: ['400', '600', '700', '800'],
 })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
 
 export const metadata: Metadata = {
   title: {

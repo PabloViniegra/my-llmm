@@ -282,6 +282,11 @@
   }
   .aura-pulse { animation: aura-pulse 2s ease-in-out infinite; }
 
+  /* iOS safe-area bottom padding (home indicator / notch) */
+  .pb-safe {
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;

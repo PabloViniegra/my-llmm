@@ -46,9 +46,10 @@ export function ChatHeader({
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="sticky top-0 z-10 px-4 pt-4 pb-2 flex items-center justify-between max-w-2xl mx-auto w-full"
+        className="sticky top-0 z-10 px-4 pt-4 pb-2 grid grid-cols-3 items-center gap-2 max-w-2xl mx-auto w-full"
       >
         {/* Left: history */}
+        <div className="flex items-center">
         <Tooltip>
           <TooltipTrigger
             render={
@@ -68,8 +69,10 @@ export function ChatHeader({
           />
           <TooltipContent>History</TooltipContent>
         </Tooltip>
+        </div>
 
-        {/* Center: title pill */}
+        {/* Center: title pill — always truly centered */}
+        <div className="flex justify-center">
         <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2">
           <div className="size-4.5 rounded-[5px] overflow-hidden shrink-0">
             <Image
@@ -85,9 +88,10 @@ export function ChatHeader({
             LLM Chat
           </span>
         </div>
+        </div>
 
         {/* Right: share + theme + new */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2">
           {canShare && conversationId && (
             <>
               <Tooltip>

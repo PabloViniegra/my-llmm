@@ -31,7 +31,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading, disabled 
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="relative px-4 pb-5 pt-2 max-w-2xl mx-auto w-full"
+      className="relative px-4 pb-safe pt-2 max-w-2xl mx-auto w-full"
     >
       {/* Loading aura */}
       <AnimatePresence>
@@ -65,7 +65,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading, disabled 
           onKeyDown={handleKeyDown}
           placeholder={disabled ? 'Read only' : 'Ask anything…'}
           rows={1}
-          className="flex-1 resize-none border-none bg-transparent dark:bg-transparent shadow-none text-[14.5px] leading-relaxed min-h-[24px] max-h-[160px] p-0 placeholder:text-foreground/30 font-[inherit] focus-visible:ring-0 focus-visible:border-transparent"
+          className="flex-1 resize-none border-none bg-transparent dark:bg-transparent shadow-none text-base sm:text-[14.5px] leading-relaxed min-h-[24px] max-h-[160px] p-0 placeholder:text-foreground/30 font-[inherit] focus-visible:ring-0 focus-visible:border-transparent"
           disabled={isLoading || disabled}
           aria-label="Chat input"
         />
@@ -114,7 +114,7 @@ export function ChatInput({ input, onInputChange, onSubmit, isLoading, disabled 
         </MotionButton>
       </div>
 
-      <p className="text-center text-[10.5px] text-foreground/45 mt-2 tracking-wide">
+      <p className="hidden sm:block text-center text-[10.5px] text-foreground/45 mt-2 tracking-wide">
         {disabled ? '\u00a0' : 'Enter to send · Shift+Enter for new line'}
       </p>
     </m.div>

@@ -1,13 +1,3 @@
-import emailjs from '@emailjs/nodejs'
-
-/**
- * Server-side email utility using EmailJS Node.js SDK.
- * Requires MAIL_* environment variables to be set.
- *
- * IMPORTANT: Non-browser API requests must be enabled in the
- * EmailJS dashboard → Account → Security.
- */
-
 interface VerificationEmailParams {
   toName: string
   toEmail: string
@@ -20,46 +10,38 @@ interface ResetPasswordEmailParams {
   resetUrl: string
 }
 
-export async function sendResetPasswordEmail({
-  toName,
-  toEmail,
-  resetUrl,
-}: ResetPasswordEmailParams): Promise<void> {
+async function sendEmailJS(templateId: string, templateParams: Record<string, string>): Promise<void> {
   const serviceId = process.env.MAIL_SERVICE_ID
-  const templateId = process.env.MAIL_RESET_TEMPLATE_ID
   const publicKey = process.env.MAIL_PUBLIC_KEY
   const privateKey = process.env.MAIL_PRIVATE_KEY
 
   if (!serviceId || !templateId || !publicKey || !privateKey) {
-    console.error(
-      '[email] Missing MAIL_* env vars — reset password email not sent',
-    )
-    return
+    console.error('[email] Missing MAIL_* env vars', { serviceId: !!serviceId, templateId: !!templateId, publicKey: !!publicKey, privateKey: !!privateKey })
+    throw new Error('[email] Missing required MAIL_* environment variables')
   }
 
-  const recipientEmail = toEmail.trim()
+  const body = JSON.stringify({
+    service_id: serviceId,
+    template_id: templateId,
+    user_id: publicKey,
+    accessToken: privateKey,
+    template_params: templateParams,
+  })
 
-  if (!recipientEmail) {
-    throw new Error('[email] Recipient email is empty')
+  console.log('[email] Sending via EmailJS REST API to template:', templateId)
+
+  const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body,
+  })
+
+  const text = await response.text()
+  console.log('[email] EmailJS response:', response.status, text)
+
+  if (!response.ok) {
+    throw new Error(`[email] EmailJS API error ${response.status}: ${text}`)
   }
-
-  await emailjs.send(
-    serviceId,
-    templateId,
-    {
-      to_name: toName,
-      to_email: recipientEmail,
-      email: recipientEmail,
-      user_email: recipientEmail,
-      reset_url: resetUrl,
-      company_name: process.env.MAIL_COMPANY_NAME ?? 'LLM Chat',
-      company_email: process.env.MAIL_COMPANY_EMAIL ?? '',
-    },
-    {
-      publicKey,
-      privateKey,
-    },
-  )
 }
 
 export async function sendVerificationEmail({
@@ -67,37 +49,35 @@ export async function sendVerificationEmail({
   toEmail,
   verificationUrl,
 }: VerificationEmailParams): Promise<void> {
-  const serviceId = process.env.MAIL_SERVICE_ID
   const templateId = process.env.MAIL_TEMPLATE_ID
-  const publicKey = process.env.MAIL_PUBLIC_KEY
-  const privateKey = process.env.MAIL_PRIVATE_KEY
+  if (!templateId) throw new Error('[email] Missing MAIL_TEMPLATE_ID')
 
-  if (!serviceId || !templateId || !publicKey || !privateKey) {
-    console.error('[email] Missing MAIL_* env vars — email not sent')
-    return
-  }
+  await sendEmailJS(templateId, {
+    to_name: toName,
+    to_email: toEmail,
+    email: toEmail,
+    user_email: toEmail,
+    verification_url: verificationUrl,
+    company_name: process.env.MAIL_COMPANY_NAME ?? 'LLM Chat',
+    company_email: process.env.MAIL_COMPANY_EMAIL ?? '',
+  })
+}
 
-  const recipientEmail = toEmail.trim()
+export async function sendResetPasswordEmail({
+  toName,
+  toEmail,
+  resetUrl,
+}: ResetPasswordEmailParams): Promise<void> {
+  const templateId = process.env.MAIL_RESET_TEMPLATE_ID
+  if (!templateId) throw new Error('[email] Missing MAIL_RESET_TEMPLATE_ID')
 
-  if (!recipientEmail) {
-    throw new Error('[email] Recipient email is empty')
-  }
-
-  await emailjs.send(
-    serviceId,
-    templateId,
-    {
-      to_name: toName,
-      to_email: recipientEmail,
-      email: recipientEmail,
-      user_email: recipientEmail,
-      verification_url: verificationUrl,
-      company_name: process.env.MAIL_COMPANY_NAME ?? 'LLM Chat',
-      company_email: process.env.MAIL_COMPANY_EMAIL ?? '',
-    },
-    {
-      publicKey,
-      privateKey,
-    },
-  )
+  await sendEmailJS(templateId, {
+    to_name: toName,
+    to_email: toEmail,
+    email: toEmail,
+    user_email: toEmail,
+    reset_url: resetUrl,
+    company_name: process.env.MAIL_COMPANY_NAME ?? 'LLM Chat',
+    company_email: process.env.MAIL_COMPANY_EMAIL ?? '',
+  })
 }

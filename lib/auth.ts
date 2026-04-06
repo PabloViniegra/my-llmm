@@ -6,23 +6,16 @@ import { sendResetPasswordEmail, sendVerificationEmail } from '@/lib/email'
 
 export const auth = betterAuth({
   database: prismaAdapter(db, {
-    provider: 'sqlite',
+    provider: 'postgresql',
   }),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      // Don't await — fire-and-forget, same pattern as email verification.
-      void sendResetPasswordEmail({
+      await sendResetPasswordEmail({
         toName: user.name,
         toEmail: user.email,
         resetUrl: url,
-      }).catch((error: unknown) => {
-        console.error('[reset-password] Failed to send reset password email', {
-          userId: user.id,
-          email: user.email,
-          error,
-        })
       })
     },
   },
@@ -30,21 +23,18 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      // Don't await — avoids timing attacks. Fire-and-forget.
-      void sendVerificationEmail({
-        toName: user.name,
-        toEmail: user.email,
-        verificationUrl: url,
-      }).catch((error: unknown) => {
-        console.error(
-          '[email-verification] Failed to send verification email',
-          {
-            userId: user.id,
-            email: user.email,
-            error,
-          },
-        )
-      })
+      console.log('[auth] sendVerificationEmail callback triggered for:', user.email)
+      try {
+        await sendVerificationEmail({
+          toName: user.name,
+          toEmail: user.email,
+          verificationUrl: url,
+        })
+        console.log('[auth] sendVerificationEmail completed OK')
+      } catch (err) {
+        console.error('[auth] sendVerificationEmail FAILED:', err)
+        throw err
+      }
     },
   },
   plugins: [nextCookies()],

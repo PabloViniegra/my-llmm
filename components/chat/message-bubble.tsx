@@ -42,7 +42,7 @@ export const MessageBubble = memo(function MessageBubble({ role, content }: Mess
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: 'spring', stiffness: 340, damping: 30, delay: 0.03 }}
         className={cn(
-          'max-w-[80%] px-4 py-3',
+          'max-w-[85%] sm:max-w-[80%] px-4 py-3',
           isUser
             ? [
                 'rounded-[20px] rounded-br-[6px]',
